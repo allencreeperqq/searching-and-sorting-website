@@ -1,0 +1,1078 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>排序法學習視覺化</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --bar: #60a5fa;
+      --compare: #f59e0b;
+      --swap: #ef4444;
+      --sorted: #22c55e;
+      --write: #a855f7;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Noto Sans TC", sans-serif;
+      background: linear-gradient(135deg, #020617 0%, #111827 100%);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .app {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: rgba(17, 24, 39, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 1.6rem;
+    }
+
+    p.desc {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .control-group {
+      background: rgba(2, 6, 23, 0.55);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 10px;
+      padding: 10px;
+      min-height: 78px;
+    }
+
+    .group-4 { grid-column: span 4; }
+    .group-3 { grid-column: span 3; }
+    .group-2 { grid-column: span 2; }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-bottom: 6px;
+    }
+
+    select,
+    input[type="range"],
+    button {
+      width: 100%;
+    }
+
+    select,
+    button {
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      background: #0b1220;
+      color: var(--text);
+      padding: 0 10px;
+    }
+
+    button {
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button:hover:not(:disabled) {
+      border-color: rgba(96, 165, 250, 0.9);
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-row {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+    }
+
+    .value {
+      color: #cbd5e1;
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 16px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .chart-wrap {
+      height: 360px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 10px;
+      background: rgba(2, 6, 23, 0.55);
+      padding: 12px;
+      overflow: hidden;
+    }
+
+    .chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 100%;
+      width: 100%;
+    }
+
+    .bar {
+      flex: 1;
+      min-width: 6px;
+      background: var(--bar);
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+      position: relative;
+      transition: height 0.18s linear, background-color 0.12s linear;
+    }
+
+    .bar span {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      color: #cbd5e1;
+      user-select: none;
+    }
+
+    .bar.compare { background: var(--compare); }
+    .bar.swap { background: var(--swap); }
+    .bar.sorted { background: var(--sorted); }
+    .bar.write { background: var(--write); }
+
+    .status {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .status-box {
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      background: rgba(2, 6, 23, 0.45);
+      padding: 10px;
+      min-height: 56px;
+    }
+
+    .status-title {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    .status-text {
+      font-size: 0.92rem;
+      color: #dbeafe;
+    }
+
+    .step-counter {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      white-space: nowrap;
+    }
+
+    .complexity-box {
+      margin-bottom: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 10px;
+      background: rgba(2, 6, 23, 0.45);
+      padding: 10px;
+    }
+
+    .complexity-title {
+      font-size: 0.9rem;
+      color: #dbeafe;
+      margin-bottom: 8px;
+    }
+
+    .complexity-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .complexity-item {
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      padding: 8px;
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    .complexity-label {
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-bottom: 4px;
+    }
+
+    .complexity-value {
+      color: #e2e8f0;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .algo-explain-box {
+      margin-bottom: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 10px;
+      background: rgba(2, 6, 23, 0.45);
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .algo-explain-card {
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 8px;
+    }
+
+    .algo-explain-title {
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-bottom: 4px;
+    }
+
+    .algo-explain-text {
+      color: #e2e8f0;
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .code-section {
+      margin-top: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 10px;
+      background: rgba(2, 6, 23, 0.45);
+      padding: 10px;
+    }
+
+    .code-section-title {
+      font-size: 0.9rem;
+      color: #dbeafe;
+      margin-bottom: 10px;
+    }
+
+    .code-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .code-card {
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(15, 23, 42, 0.65);
+    }
+
+    .code-card-title {
+      padding: 8px 10px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      background: rgba(2, 6, 23, 0.65);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .copy-btn {
+      width: auto;
+      height: 28px;
+      font-size: 0.78rem;
+      padding: 0 10px;
+      border-radius: 7px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      background: #0b1220;
+      color: #dbeafe;
+      cursor: pointer;
+    }
+
+    .copy-hint {
+      margin-top: 8px;
+      color: #93c5fd;
+      font-size: 0.82rem;
+      min-height: 18px;
+    }
+
+    .code-card pre {
+      margin: 0;
+      padding: 10px;
+      max-height: 300px;
+      overflow: auto;
+      color: #cfe8ff;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      white-space: pre;
+    }
+
+    @media (max-width: 860px) {
+      .group-4,
+      .group-3,
+      .group-2 {
+        grid-column: span 6;
+      }
+      .btn-row {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .complexity-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .code-grid {
+        grid-template-columns: 1fr;
+      }
+      .algo-explain-box {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .group-4,
+      .group-3,
+      .group-2 {
+        grid-column: span 12;
+      }
+      .btn-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .bar span {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>排序法步驟動畫（學習版）</h1>
+    <p class="desc">包含氣泡排序、選擇排序、插入排序、快速排序。可調整資料筆數與動畫速度，並逐步觀察每個比較與交換（或覆寫）。</p>
+
+    <div class="controls">
+      <div class="control-group group-4">
+        <label for="algorithm">排序法</label>
+        <select id="algorithm">
+          <option value="bubble">氣泡排序 Bubble Sort</option>
+          <option value="selection">選擇排序 Selection Sort</option>
+          <option value="insertion">插入排序 Insertion Sort</option>
+          <option value="quick">快速排序 Quick Sort</option>
+        </select>
+      </div>
+
+      <div class="control-group group-4">
+        <label for="sizeRange">資料數量</label>
+        <input id="sizeRange" type="range" min="5" max="60" value="20" />
+        <div class="value" id="sizeValue">20 筆</div>
+      </div>
+
+      <div class="control-group group-4">
+        <label for="speedRange">動畫速度</label>
+        <input id="speedRange" type="range" min="1" max="100" value="45" />
+        <div class="value" id="speedValue">中速（每步 145ms）</div>
+      </div>
+
+      <div class="btn-row">
+        <button id="generateBtn">重新產生資料</button>
+        <button id="startBtn">開始播放</button>
+        <button id="pauseBtn" disabled>暫停</button>
+        <button id="stepBtn">下一步</button>
+        <button id="prevBtn">上一步</button>
+        <button id="resetBtn">重置</button>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span class="legend-item"><span class="dot" style="background: var(--bar)"></span>一般</span>
+      <span class="legend-item"><span class="dot" style="background: var(--compare)"></span>比較中</span>
+      <span class="legend-item"><span class="dot" style="background: var(--swap)"></span>交換中</span>
+      <span class="legend-item"><span class="dot" style="background: var(--write)"></span>覆寫中</span>
+      <span class="legend-item"><span class="dot" style="background: var(--sorted)"></span>已定位</span>
+    </div>
+
+    <div class="complexity-box">
+      <div id="complexityTitle" class="complexity-title">時間複雜度（氣泡排序）</div>
+      <div class="complexity-grid">
+        <div class="complexity-item">
+          <div class="complexity-label">Best</div>
+          <div id="bestComplexity" class="complexity-value">O(n)</div>
+        </div>
+        <div class="complexity-item">
+          <div class="complexity-label">Average</div>
+          <div id="avgComplexity" class="complexity-value">O(n²)</div>
+        </div>
+        <div class="complexity-item">
+          <div class="complexity-label">Worst</div>
+          <div id="worstComplexity" class="complexity-value">O(n²)</div>
+        </div>
+        <div class="complexity-item">
+          <div class="complexity-label">Space</div>
+          <div id="spaceComplexity" class="complexity-value">O(1)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="algo-explain-box">
+      <div class="algo-explain-card">
+        <div class="algo-explain-title">演算法定義</div>
+        <div id="algoDefinition" class="algo-explain-text">氣泡排序會重複比較相鄰元素，若順序錯誤就交換，讓較大的值逐步往右移動。</div>
+      </div>
+      <div class="algo-explain-card">
+        <div class="algo-explain-title">核心想法</div>
+        <div id="algoIdea" class="algo-explain-text">每一輪都把當前最大值推到尾端，並用是否發生交換來提前結束。</div>
+      </div>
+    </div>
+
+    <div class="chart-wrap">
+      <div id="chart" class="chart"></div>
+    </div>
+
+    <div class="status">
+      <div class="status-box">
+        <div class="status-title">步驟說明</div>
+        <div id="statusText" class="status-text">請按「開始播放」或「下一步」。</div>
+      </div>
+      <div id="stepCounter" class="step-counter">步驟：0 / 0</div>
+    </div>
+
+    <div class="code-section">
+      <div class="code-section-title">演算法參考程式碼</div>
+      <div class="code-grid">
+        <div class="code-card">
+          <div class="code-card-title">
+            <span>C++</span>
+            <button id="copyCppBtn" class="copy-btn" type="button">一鍵複製</button>
+          </div>
+          <pre><code id="cppCode"></code></pre>
+        </div>
+        <div class="code-card">
+          <div class="code-card-title">
+            <span>Python</span>
+            <button id="copyPythonBtn" class="copy-btn" type="button">一鍵複製</button>
+          </div>
+          <pre><code id="pythonCode"></code></pre>
+        </div>
+      </div>
+      <div id="copyHint" class="copy-hint"></div>
+    </div>
+  </div>
+
+  <script>
+    const algorithmEl = document.getElementById('algorithm');
+    const sizeRangeEl = document.getElementById('sizeRange');
+    const speedRangeEl = document.getElementById('speedRange');
+    const sizeValueEl = document.getElementById('sizeValue');
+    const speedValueEl = document.getElementById('speedValue');
+    const generateBtn = document.getElementById('generateBtn');
+    const startBtn = document.getElementById('startBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const stepBtn = document.getElementById('stepBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const chartEl = document.getElementById('chart');
+    const statusTextEl = document.getElementById('statusText');
+    const stepCounterEl = document.getElementById('stepCounter');
+    const complexityTitleEl = document.getElementById('complexityTitle');
+    const bestComplexityEl = document.getElementById('bestComplexity');
+    const avgComplexityEl = document.getElementById('avgComplexity');
+    const worstComplexityEl = document.getElementById('worstComplexity');
+    const spaceComplexityEl = document.getElementById('spaceComplexity');
+    const algoDefinitionEl = document.getElementById('algoDefinition');
+    const algoIdeaEl = document.getElementById('algoIdea');
+    const cppCodeEl = document.getElementById('cppCode');
+    const pythonCodeEl = document.getElementById('pythonCode');
+    const copyCppBtn = document.getElementById('copyCppBtn');
+    const copyPythonBtn = document.getElementById('copyPythonBtn');
+    const copyHintEl = document.getElementById('copyHint');
+
+    const ALGO_INFO = {
+      bubble: {
+        label: '氣泡排序 Bubble Sort',
+        complexity: { best: 'O(n)', avg: 'O(n²)', worst: 'O(n²)', space: 'O(1)' },
+        definition: '透過重複比較相鄰兩個元素並在必要時交換，逐步把較大元素往陣列尾端移動。',
+        idea: '每一輪會把當前最大值固定在右側；若某輪完全沒有交換，代表已排序可提前結束。',
+        cpp: `void bubbleSort(vector<int>& a) {
+  // n 是資料長度
+  int n = (int)a.size();
+  // 外圈控制總共要做幾輪
+  for (int i = 0; i < n - 1; ++i) {
+    // 用 swapped 追蹤本輪是否有發生交換
+    bool swapped = false;
+    // 每輪把最大值往右推，因此右邊界會逐步縮小
+    for (int j = 0; j < n - i - 1; ++j) {
+      // 若左邊比較大就交換
+      if (a[j] > a[j + 1]) {
+        swap(a[j], a[j + 1]);
+        swapped = true;
+      }
+    }
+    // 這一輪都沒交換，代表陣列已排序
+    if (!swapped) break;
+  }
+}`,
+        py: `def bubble_sort(arr):
+    # n 是資料長度
+    n = len(arr)
+    # 外圈控制輪數
+    for i in range(n - 1):
+        # swapped 紀錄本輪是否有交換
+        swapped = False
+        # 右側已定位元素不再比較
+        for j in range(n - i - 1):
+            # 若順序錯誤則交換
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                swapped = True
+        # 無交換可提前結束
+        if not swapped:
+            break`
+      },
+      selection: {
+        label: '選擇排序 Selection Sort',
+        complexity: { best: 'O(n²)', avg: 'O(n²)', worst: 'O(n²)', space: 'O(1)' },
+        definition: '每一輪從未排序區間中找出最小值，放到未排序區間的最前面。',
+        idea: '把陣列分成已排序與未排序兩段，每次只做一次定位交換，逐步擴大左側已排序區。',
+        cpp: `void selectionSort(vector<int>& a) {
+  // n 是資料長度
+  int n = (int)a.size();
+  // i 代表本輪要確定的位置
+  for (int i = 0; i < n - 1; ++i) {
+    // 先假設 i 是最小值位置
+    int minIdx = i;
+    // 在未排序區間搜尋真正最小值
+    for (int j = i + 1; j < n; ++j) {
+      if (a[j] < a[minIdx]) minIdx = j;
+    }
+    // 找到後放到 i
+    if (minIdx != i) swap(a[i], a[minIdx]);
+  }
+}`,
+        py: `def selection_sort(arr):
+    # n 是資料長度
+    n = len(arr)
+    # i 代表本輪要定位的索引
+    for i in range(n - 1):
+        # 先假設 i 是最小值
+        min_idx = i
+        # 掃描右側未排序區間
+        for j in range(i + 1, n):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        # 把最小值放到前面
+        if min_idx != i:
+            arr[i], arr[min_idx] = arr[min_idx], arr[i]`
+      },
+      insertion: {
+        label: '插入排序 Insertion Sort',
+        complexity: { best: 'O(n)', avg: 'O(n²)', worst: 'O(n²)', space: 'O(1)' },
+        definition: '每次取出下一個元素，插入到左側已排序子陣列中的正確位置。',
+        idea: '維持左側永遠有序；新元素往左比較，遇到較大值就右移，最後把 key 放入空位。',
+        cpp: `void insertionSort(vector<int>& a) {
+  // 從第二個元素開始，逐一插入到左側有序區
+  for (int i = 1; i < (int)a.size(); ++i) {
+    // key 是本輪要插入的值
+    int key = a[i];
+    int j = i - 1;
+    // 比 key 大的元素全部右移
+    while (j >= 0 && a[j] > key) {
+      a[j + 1] = a[j];
+      --j;
+    }
+    // 把 key 放到正確位置
+    a[j + 1] = key;
+  }
+}`,
+        py: `def insertion_sort(arr):
+    # 從第二個元素開始插入
+    for i in range(1, len(arr)):
+        # key 為待插入元素
+        key = arr[i]
+        j = i - 1
+        # 將比 key 大的值往右搬移
+        while j >= 0 and arr[j] > key:
+            arr[j + 1] = arr[j]
+            j -= 1
+        # 放回正確位置
+        arr[j + 1] = key`
+      },
+      quick: {
+        label: '快速排序 Quick Sort',
+        complexity: { best: 'O(n log n)', avg: 'O(n log n)', worst: 'O(n²)', space: 'O(log n)' },
+        definition: '選一個 pivot，將資料分成小於等於 pivot 與大於 pivot 的兩側，再遞迴排序。',
+        idea: '關鍵在 partition：每次把 pivot 放到最終位置，問題自然拆成左右兩個更小子問題。',
+        cpp: `int partition(vector<int>& a, int l, int r) {
+  // 這裡選最後一個元素作為 pivot
+  int pivot = a[r];
+  int i = l - 1;
+  // 將 <= pivot 的元素放到左側
+  for (int j = l; j < r; ++j) {
+    if (a[j] <= pivot) {
+      ++i;
+      swap(a[i], a[j]);
+    }
+  }
+  // pivot 放到正確位置
+  swap(a[i + 1], a[r]);
+  return i + 1;
+}
+
+void quickSort(vector<int>& a, int l, int r) {
+  // 子陣列長度小於等於 1 直接返回
+  if (l >= r) return;
+  // p 是 pivot 最終位置
+  int p = partition(a, l, r);
+  // 分別遞迴排序左右兩邊
+  quickSort(a, l, p - 1);
+  quickSort(a, p + 1, r);
+}`,
+        py: `def partition(arr, l, r):
+    # 選最後一個元素為 pivot
+    pivot = arr[r]
+    i = l - 1
+    # 把 <= pivot 的元素交換到左區
+    for j in range(l, r):
+        if arr[j] <= pivot:
+            i += 1
+            arr[i], arr[j] = arr[j], arr[i]
+    # pivot 放到中間正確位置
+    arr[i + 1], arr[r] = arr[r], arr[i + 1]
+    return i + 1
+
+def quick_sort(arr, l, r):
+    # 長度 <= 1 不需處理
+    if l >= r:
+        return
+    # 先分割，再遞迴左右子陣列
+    p = partition(arr, l, r)
+    quick_sort(arr, l, p - 1)
+    quick_sort(arr, p + 1, r)`
+      }
+    };
+
+    let originalData = [];
+    let workingData = [];
+    let steps = [];
+    let currentStep = 0;
+    let timer = null;
+
+    function randomData(length) {
+      return Array.from({ length }, () => Math.floor(Math.random() * 96) + 5);
+    }
+
+    function speedToMs(speedValue) {
+      return Math.max(20, 280 - Number(speedValue) * 3);
+    }
+
+    function speedLabel(speedValue) {
+      const ms = speedToMs(speedValue);
+      const tag = speedValue < 30 ? '慢速' : speedValue < 70 ? '中速' : '高速';
+      return `${tag}（每步 ${ms}ms）`;
+    }
+
+    function makeStep(type, array, options = {}) {
+      return {
+        type,
+        array: [...array],
+        indices: options.indices || [],
+        sorted: options.sorted ? [...options.sorted] : [],
+        text: options.text || ''
+      };
+    }
+
+    function buildBubbleSteps(source) {
+      const arr = [...source];
+      const out = [makeStep('init', arr, { text: '初始資料。' })];
+      const n = arr.length;
+      for (let i = 0; i < n - 1; i++) {
+        let swapped = false;
+        for (let j = 0; j < n - i - 1; j++) {
+          out.push(makeStep('compare', arr, { indices: [j, j + 1], text: `比較索引 ${j} 與 ${j + 1}。` }));
+          if (arr[j] > arr[j + 1]) {
+            [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+            swapped = true;
+            out.push(makeStep('swap', arr, {
+              indices: [j, j + 1],
+              text: `${arr[j]} 與 ${arr[j + 1]} 已交換。`
+            }));
+          }
+        }
+        const sorted = [];
+        for (let k = n - i - 1; k < n; k++) sorted.push(k);
+        out.push(makeStep('mark', arr, { sorted, text: `第 ${i + 1} 輪完成，尾端元素已定位。` }));
+        if (!swapped) {
+          out.push(makeStep('done', arr, {
+            sorted: Array.from({ length: n }, (_, idx) => idx),
+            text: '本輪無交換，序列已排序完成。'
+          }));
+          return out;
+        }
+      }
+      out.push(makeStep('done', arr, {
+        sorted: Array.from({ length: n }, (_, idx) => idx),
+        text: '排序完成。'
+      }));
+      return out;
+    }
+
+    function buildSelectionSteps(source) {
+      const arr = [...source];
+      const out = [makeStep('init', arr, { text: '初始資料。' })];
+      const n = arr.length;
+      for (let i = 0; i < n - 1; i++) {
+        let min = i;
+        out.push(makeStep('compare', arr, { indices: [i], sorted: Array.from({ length: i }, (_, idx) => idx), text: `第 ${i + 1} 輪，先假設索引 ${i} 為最小值。` }));
+        for (let j = i + 1; j < n; j++) {
+          out.push(makeStep('compare', arr, {
+            indices: [min, j],
+            sorted: Array.from({ length: i }, (_, idx) => idx),
+            text: `比較目前最小索引 ${min} 與索引 ${j}。`
+          }));
+          if (arr[j] < arr[min]) {
+            min = j;
+            out.push(makeStep('compare', arr, {
+              indices: [min],
+              sorted: Array.from({ length: i }, (_, idx) => idx),
+              text: `更新最小值索引為 ${min}。`
+            }));
+          }
+        }
+        if (min !== i) {
+          [arr[i], arr[min]] = [arr[min], arr[i]];
+          out.push(makeStep('swap', arr, {
+            indices: [i, min],
+            sorted: Array.from({ length: i + 1 }, (_, idx) => idx),
+            text: `將最小值交換到索引 ${i}。`
+          }));
+        } else {
+          out.push(makeStep('mark', arr, {
+            sorted: Array.from({ length: i + 1 }, (_, idx) => idx),
+            text: `索引 ${i} 已是最小值，不需交換。`
+          }));
+        }
+      }
+      out.push(makeStep('done', arr, {
+        sorted: Array.from({ length: n }, (_, idx) => idx),
+        text: '排序完成。'
+      }));
+      return out;
+    }
+
+    function buildInsertionSteps(source) {
+      const arr = [...source];
+      const out = [makeStep('init', arr, { text: '初始資料。' })];
+      const n = arr.length;
+      const sortedPrefix = [0];
+      out.push(makeStep('mark', arr, { sorted: sortedPrefix, text: '第一個元素視為已排序。' }));
+
+      for (let i = 1; i < n; i++) {
+        const key = arr[i];
+        let j = i - 1;
+        out.push(makeStep('compare', arr, {
+          indices: [i],
+          sorted: Array.from({ length: i }, (_, idx) => idx),
+          text: `取出索引 ${i} 的值 ${key}，往左插入。`
+        }));
+
+        while (j >= 0 && arr[j] > key) {
+          out.push(makeStep('compare', arr, {
+            indices: [j, j + 1],
+            sorted: Array.from({ length: i }, (_, idx) => idx),
+            text: `比較 ${arr[j]} 與待插入值 ${key}。`
+          }));
+          arr[j + 1] = arr[j];
+          out.push(makeStep('write', arr, {
+            indices: [j + 1],
+            sorted: Array.from({ length: i }, (_, idx) => idx),
+            text: `${arr[j + 1]} 右移到索引 ${j + 1}。`
+          }));
+          j--;
+        }
+
+        arr[j + 1] = key;
+        out.push(makeStep('write', arr, {
+          indices: [j + 1],
+          sorted: Array.from({ length: i + 1 }, (_, idx) => idx),
+          text: `將 ${key} 插入索引 ${j + 1}。`
+        }));
+      }
+
+      out.push(makeStep('done', arr, {
+        sorted: Array.from({ length: n }, (_, idx) => idx),
+        text: '排序完成。'
+      }));
+      return out;
+    }
+
+    function buildQuickSteps(source) {
+      const arr = [...source];
+      const out = [makeStep('init', arr, { text: '初始資料。' })];
+      const fixed = new Set();
+
+      function snapshot(type, indices, text) {
+        out.push(makeStep(type, arr, {
+          indices,
+          sorted: Array.from(fixed).sort((a, b) => a - b),
+          text
+        }));
+      }
+
+      function partition(low, high) {
+        const pivot = arr[high];
+        let i = low - 1;
+        snapshot('compare', [high], `選擇索引 ${high} 的 ${pivot} 當 pivot。`);
+        for (let j = low; j < high; j++) {
+          snapshot('compare', [j, high], `比較 arr[${j}] = ${arr[j]} 與 pivot ${pivot}。`);
+          if (arr[j] <= pivot) {
+            i++;
+            if (i !== j) {
+              [arr[i], arr[j]] = [arr[j], arr[i]];
+              snapshot('swap', [i, j], `因 arr[${j}] <= pivot，交換到左側區間。`);
+            } else {
+              snapshot('mark', [j], `arr[${j}] <= pivot，留在左側區間。`);
+            }
+          }
+        }
+        [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]];
+        fixed.add(i + 1);
+        snapshot('swap', [i + 1, high], `將 pivot 放到正確位置索引 ${i + 1}。`);
+        return i + 1;
+      }
+
+      function quick(low, high) {
+        if (low > high) return;
+        if (low === high) {
+          fixed.add(low);
+          snapshot('mark', [low], `單一元素索引 ${low} 自然有序。`);
+          return;
+        }
+        const p = partition(low, high);
+        quick(low, p - 1);
+        quick(p + 1, high);
+      }
+
+      quick(0, arr.length - 1);
+      for (let i = 0; i < arr.length; i++) fixed.add(i);
+      snapshot('done', [], '排序完成。');
+      return out;
+    }
+
+    function getStepsByAlgorithm(name, source) {
+      if (name === 'bubble') return buildBubbleSteps(source);
+      if (name === 'selection') return buildSelectionSteps(source);
+      if (name === 'insertion') return buildInsertionSteps(source);
+      return buildQuickSteps(source);
+    }
+
+    function render(state, highlight = [], sorted = [], type = 'init') {
+      chartEl.innerHTML = '';
+      const max = Math.max(...state, 1);
+
+      state.forEach((value, idx) => {
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        bar.style.height = `${(value / max) * 100}%`;
+
+        if (sorted.includes(idx)) bar.classList.add('sorted');
+        if (highlight.includes(idx)) {
+          if (type === 'swap') bar.classList.add('swap');
+          else if (type === 'write') bar.classList.add('write');
+          else bar.classList.add('compare');
+        }
+
+        const text = document.createElement('span');
+        text.textContent = value;
+        bar.appendChild(text);
+        chartEl.appendChild(bar);
+      });
+    }
+
+    function updateAlgorithmInfo() {
+      const info = ALGO_INFO[algorithmEl.value];
+      complexityTitleEl.textContent = `時間複雜度（${info.label}）`;
+      bestComplexityEl.textContent = info.complexity.best;
+      avgComplexityEl.textContent = info.complexity.avg;
+      worstComplexityEl.textContent = info.complexity.worst;
+      spaceComplexityEl.textContent = info.complexity.space;
+      algoDefinitionEl.textContent = info.definition;
+      algoIdeaEl.textContent = info.idea;
+      cppCodeEl.textContent = info.cpp;
+      pythonCodeEl.textContent = info.py;
+    }
+
+    async function copyText(text, languageName) {
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const temp = document.createElement('textarea');
+          temp.value = text;
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand('copy');
+          document.body.removeChild(temp);
+        }
+        copyHintEl.textContent = `${languageName} 程式碼已複製到剪貼簿。`;
+      } catch (error) {
+        copyHintEl.textContent = `複製失敗，請手動複製 ${languageName} 程式碼。`;
+      }
+    }
+
+    function showStep(index) {
+      if (index < 0) index = 0;
+      if (index >= steps.length) index = steps.length - 1;
+      currentStep = index;
+      const s = steps[currentStep];
+      workingData = [...s.array];
+      render(workingData, s.indices, s.sorted, s.type);
+      statusTextEl.textContent = s.text || '...';
+      stepCounterEl.textContent = `步驟：${currentStep + 1} / ${steps.length}`;
+
+      prevBtn.disabled = currentStep === 0;
+      stepBtn.disabled = currentStep >= steps.length - 1;
+    }
+
+    function stopPlay() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+      startBtn.disabled = false;
+      pauseBtn.disabled = true;
+      generateBtn.disabled = false;
+      algorithmEl.disabled = false;
+      sizeRangeEl.disabled = false;
+    }
+
+    function startPlay() {
+      if (timer) return;
+      if (currentStep >= steps.length - 1) return;
+
+      startBtn.disabled = true;
+      pauseBtn.disabled = false;
+      generateBtn.disabled = true;
+      algorithmEl.disabled = true;
+      sizeRangeEl.disabled = true;
+
+      timer = setInterval(() => {
+        if (currentStep >= steps.length - 1) {
+          stopPlay();
+          return;
+        }
+        showStep(currentStep + 1);
+      }, speedToMs(speedRangeEl.value));
+    }
+
+    function buildScenario() {
+      stopPlay();
+      updateAlgorithmInfo();
+      steps = getStepsByAlgorithm(algorithmEl.value, originalData);
+      showStep(0);
+    }
+
+    function generateNewData() {
+      stopPlay();
+      const size = Number(sizeRangeEl.value);
+      originalData = randomData(size);
+      buildScenario();
+      statusTextEl.textContent = '新資料已產生，請開始播放或單步執行。';
+    }
+
+    algorithmEl.addEventListener('change', () => {
+      buildScenario();
+      statusTextEl.textContent = '已切換排序法。';
+    });
+
+    sizeRangeEl.addEventListener('input', () => {
+      sizeValueEl.textContent = `${sizeRangeEl.value} 筆`;
+    });
+
+    sizeRangeEl.addEventListener('change', () => {
+      generateNewData();
+    });
+
+    speedRangeEl.addEventListener('input', () => {
+      speedValueEl.textContent = speedLabel(Number(speedRangeEl.value));
+      if (timer) {
+        stopPlay();
+        startPlay();
+      }
+    });
+
+    generateBtn.addEventListener('click', generateNewData);
+    startBtn.addEventListener('click', startPlay);
+    pauseBtn.addEventListener('click', stopPlay);
+    copyCppBtn.addEventListener('click', () => copyText(cppCodeEl.textContent, 'C++'));
+    copyPythonBtn.addEventListener('click', () => copyText(pythonCodeEl.textContent, 'Python'));
+
+    stepBtn.addEventListener('click', () => {
+      if (currentStep < steps.length - 1) showStep(currentStep + 1);
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentStep > 0) showStep(currentStep - 1);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      stopPlay();
+      buildScenario();
+      statusTextEl.textContent = '已重置到初始步驟。';
+    });
+
+    function init() {
+      sizeValueEl.textContent = `${sizeRangeEl.value} 筆`;
+      speedValueEl.textContent = speedLabel(Number(speedRangeEl.value));
+      originalData = randomData(Number(sizeRangeEl.value));
+      buildScenario();
+    }
+
+    init();
+  </script>
+</body>
+</html>
