@@ -27,9 +27,10 @@
       font-family: "Segoe UI", "Noto Sans TC", sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.18), transparent 40%),
-        radial-gradient(circle at 80% 80%, rgba(14, 165, 233, 0.2), transparent 35%),
-        linear-gradient(145deg, var(--bg-1), var(--bg-2));
+        linear-gradient(145deg, rgba(11, 19, 36, 0.75), rgba(19, 42, 69, 0.75)),
+        radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.15), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(14, 165, 233, 0.15), transparent 35%),
+        url("menu-picr.jpg") center/cover no-repeat;
     }
 
     .menu-card {
@@ -102,6 +103,23 @@
       box-shadow: 0 10px 22px rgba(14, 165, 233, 0.35);
     }
 
+    .github-link {
+      margin-top: 14px;
+      font-size: 0.92rem;
+      color: #bfdbfe;
+    }
+
+    .github-link a {
+      color: #7dd3fc;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s ease;
+    }
+
+    .github-link a:hover {
+      border-bottom-color: #7dd3fc;
+    }
+
     @media (max-width: 560px) {
       .menu-card {
         padding: 22px 16px;
@@ -127,6 +145,10 @@
     <div class="menu-actions">
       <a class="menu-link" href="sort-html.html">進入 Sort HTML</a>
     </div>
+
+    <p class="github-link">
+      GitHub：<a href="https://github.com/allencreeperqq" target="_blank" rel="noopener noreferrer">https://github.com/allencreeperqq</a>
+    </p>
   </main>
 </body>
 </html>
