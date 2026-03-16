@@ -19,32 +19,83 @@
 
     * { box-sizing: border-box; }
 
+    @keyframes pageFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     body {
       margin: 0;
       font-family: "Segoe UI", "Noto Sans TC", sans-serif;
-      background:
+      font-size: 17px;
+      line-height: 1.6;
+      background-color: #0f172a;
+      background-image:
         linear-gradient(135deg, rgba(2, 6, 23, 0.78) 0%, rgba(17, 24, 39, 0.78) 100%),
-        url("menu-picr.jpg") center/cover no-repeat;
+        url("menu-picr.jpg");
+      background-position: center center, center center;
+      background-repeat: no-repeat, no-repeat;
+      background-size: auto, cover;
       color: var(--text);
       min-height: 100vh;
       padding: 20px;
     }
 
+    .left-plugin {
+      position: fixed;
+      left: 18px;
+      top: 110px;
+      width: 250px;
+      z-index: 30;
+      display: grid;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 12px;
+      background: rgba(2, 6, 23, 0.62);
+      backdrop-filter: blur(12px) saturate(135%);
+      -webkit-backdrop-filter: blur(12px) saturate(135%);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.34);
+      animation: pageFadeIn 0.72s ease-out both;
+    }
+
+    .left-plugin-title {
+      margin: 0;
+      font-size: 0.92rem;
+      color: #dbeafe;
+      letter-spacing: 0.02em;
+    }
+
     .app {
       max-width: 1100px;
       margin: 0 auto;
+      margin-left: 290px;
       background: rgba(15, 23, 42, 0.62);
       border: 1px solid rgba(191, 219, 254, 0.28);
       border-radius: 16px;
-      padding: 20px;
+      padding: 28px;
       backdrop-filter: blur(14px) saturate(135%);
       -webkit-backdrop-filter: blur(14px) saturate(135%);
       box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
+      animation: pageFadeIn 0.9s ease-out both;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .left-plugin,
+      .app {
+        animation: none;
+      }
     }
 
     .student-header {
-      margin-bottom: 14px;
-      padding: 10px 12px;
+      margin-bottom: 18px;
+      padding: 14px 16px;
       border: 1px solid rgba(148, 163, 184, 0.25);
       border-radius: 10px;
       background: rgba(2, 6, 23, 0.45);
@@ -52,15 +103,15 @@
 
     .student-header-title {
       margin: 0 0 6px;
-      font-size: 1rem;
+      font-size: 1.1rem;
       color: #dbeafe;
     }
 
     .student-header-meta {
       margin: 0;
       color: #cbd5e1;
-      font-size: 0.92rem;
-      line-height: 1.55;
+      font-size: 1rem;
+      line-height: 1.7;
     }
 
     .top-nav {
@@ -80,40 +131,40 @@
     }
 
     h1 {
-      margin: 0 0 8px;
-      font-size: 1.6rem;
+      margin: 0 0 10px;
+      font-size: 1.9rem;
     }
 
     p.desc {
-      margin: 0 0 16px;
+      margin: 0 0 20px;
       color: var(--muted);
-      font-size: 0.95rem;
+      font-size: 1.05rem;
     }
 
     .controls {
       display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 10px;
-      margin-bottom: 16px;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-bottom: 20px;
     }
 
     .control-group {
       background: rgba(2, 6, 23, 0.55);
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 10px;
-      padding: 10px;
-      min-height: 78px;
+      padding: 14px;
+      min-height: 96px;
     }
 
-    .group-4 { grid-column: span 4; }
-    .group-3 { grid-column: span 3; }
-    .group-2 { grid-column: span 2; }
+    .group-4 { grid-column: span 1; }
+    .group-3 { grid-column: span 1; }
+    .group-2 { grid-column: span 1; }
 
     label {
       display: block;
       color: var(--muted);
-      font-size: 0.8rem;
-      margin-bottom: 6px;
+      font-size: 0.9rem;
+      margin-bottom: 8px;
     }
 
     select,
@@ -124,12 +175,13 @@
 
     select,
     button {
-      height: 34px;
+      height: 40px;
       border-radius: 8px;
       border: 1px solid rgba(148, 163, 184, 0.25);
       background: #0b1220;
       color: var(--text);
-      padding: 0 10px;
+      padding: 0 12px;
+      font-size: 0.95rem;
     }
 
     button {
@@ -151,33 +203,33 @@
       grid-column: 1 / -1;
       display: grid;
       grid-template-columns: repeat(6, 1fr);
-      gap: 10px;
+      gap: 12px;
     }
 
     .value {
       color: #cbd5e1;
-      font-size: 0.9rem;
-      margin-top: 4px;
+      font-size: 1rem;
+      margin-top: 8px;
     }
 
     .legend {
       display: flex;
       flex-wrap: wrap;
-      gap: 10px 16px;
-      font-size: 0.85rem;
+      gap: 14px 24px;
+      font-size: 0.95rem;
       color: var(--muted);
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
     .legend-item {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 10px;
     }
 
     .dot {
-      width: 12px;
-      height: 12px;
+      width: 14px;
+      height: 14px;
       border-radius: 999px;
       display: inline-block;
     }
@@ -187,14 +239,14 @@
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 10px;
       background: rgba(2, 6, 23, 0.55);
-      padding: 12px;
+      padding: 14px;
       overflow: hidden;
     }
 
     .chart {
       display: flex;
       align-items: flex-end;
-      gap: 6px;
+      gap: 9px;
       height: 100%;
       width: 100%;
     }
@@ -211,10 +263,10 @@
 
     .bar span {
       position: absolute;
-      top: -20px;
+      top: -24px;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 0.75rem;
+      font-size: 0.82rem;
       color: #cbd5e1;
       user-select: none;
     }
@@ -225,10 +277,10 @@
     .bar.write { background: var(--write); }
 
     .status {
-      margin-top: 12px;
+      margin-top: 16px;
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 10px;
+      gap: 14px;
       align-items: center;
     }
 
@@ -236,114 +288,170 @@
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 8px;
       background: rgba(2, 6, 23, 0.45);
-      padding: 10px;
-      min-height: 56px;
+      padding: 14px;
+      min-height: 72px;
     }
 
     .status-title {
-      font-size: 0.8rem;
+      font-size: 0.92rem;
       color: var(--muted);
-      margin-bottom: 5px;
+      margin-bottom: 8px;
     }
 
     .status-text {
-      font-size: 0.92rem;
+      font-size: 1.05rem;
       color: #dbeafe;
     }
 
     .step-counter {
-      font-size: 0.9rem;
+      font-size: 1rem;
       color: #cbd5e1;
       white-space: nowrap;
     }
 
     .complexity-box {
-      margin-bottom: 12px;
+      margin-bottom: 16px;
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 10px;
       background: rgba(2, 6, 23, 0.45);
-      padding: 10px;
+      padding: 14px;
     }
 
     .complexity-title {
-      font-size: 0.9rem;
+      font-size: 1rem;
       color: #dbeafe;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
+    }
+
+    .complexity-title-row {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .complexity-help {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      border: 1px solid rgba(147, 197, 253, 0.7);
+      background: rgba(11, 18, 32, 0.92);
+      color: #bfdbfe;
+      font-size: 0.84rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: help;
+      user-select: none;
+    }
+
+    .complexity-tooltip {
+      position: absolute;
+      left: 0;
+      top: calc(100% + 8px);
+      width: min(560px, 85vw);
+      border: 1px solid rgba(148, 163, 184, 0.26);
+      border-radius: 10px;
+      background: rgba(2, 6, 23, 0.95);
+      color: #dbeafe;
+      padding: 12px;
+      line-height: 1.6;
+      font-size: 0.92rem;
+      box-shadow: 0 16px 28px rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-4px);
+      transition: opacity 0.16s ease, transform 0.16s ease;
+      z-index: 40;
+    }
+
+    .complexity-help:hover + .complexity-tooltip,
+    .complexity-help:focus-visible + .complexity-tooltip,
+    .complexity-tooltip:hover {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .complexity-tooltip p {
+      margin: 0;
     }
 
     .complexity-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
+      gap: 12px;
     }
 
     .complexity-item {
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 8px;
-      padding: 8px;
+      padding: 12px;
       background: rgba(15, 23, 42, 0.6);
     }
 
     .complexity-label {
       color: var(--muted);
-      font-size: 0.78rem;
-      margin-bottom: 4px;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
     }
 
     .complexity-value {
       color: #e2e8f0;
-      font-size: 0.95rem;
+      font-size: 1.08rem;
       font-weight: 600;
     }
 
     .algo-explain-box {
-      margin-bottom: 12px;
+      margin-bottom: 16px;
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 10px;
       background: rgba(2, 6, 23, 0.45);
-      padding: 10px;
+      padding: 14px;
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
     }
 
     .algo-explain-card {
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 8px;
       background: rgba(15, 23, 42, 0.6);
-      padding: 8px;
+      padding: 12px;
     }
 
     .algo-explain-title {
       color: var(--muted);
-      font-size: 0.78rem;
-      margin-bottom: 4px;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
     }
 
     .algo-explain-text {
       color: #e2e8f0;
-      font-size: 0.9rem;
-      line-height: 1.45;
+      font-size: 1rem;
+      line-height: 1.65;
     }
 
     .code-section {
-      margin-top: 14px;
+      margin-top: 18px;
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 10px;
       background: rgba(2, 6, 23, 0.45);
-      padding: 10px;
+      padding: 14px;
     }
 
     .code-section-title {
-      font-size: 0.9rem;
+      font-size: 1rem;
       color: #dbeafe;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .code-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 14px;
     }
 
     .code-card {
@@ -354,8 +462,8 @@
     }
 
     .code-card-title {
-      padding: 8px 10px;
-      font-size: 0.82rem;
+      padding: 10px 12px;
+      font-size: 0.9rem;
       color: var(--muted);
       border-bottom: 1px solid rgba(148, 163, 184, 0.2);
       background: rgba(2, 6, 23, 0.65);
@@ -367,8 +475,8 @@
 
     .copy-btn {
       width: auto;
-      height: 28px;
-      font-size: 0.78rem;
+      height: 32px;
+      font-size: 0.86rem;
       padding: 0 10px;
       border-radius: 7px;
       border: 1px solid rgba(148, 163, 184, 0.25);
@@ -378,29 +486,37 @@
     }
 
     .copy-hint {
-      margin-top: 8px;
+      margin-top: 10px;
       color: #93c5fd;
-      font-size: 0.82rem;
-      min-height: 18px;
+      font-size: 0.92rem;
+      min-height: 22px;
     }
 
     .code-card pre {
       margin: 0;
-      padding: 10px;
+      padding: 14px;
       max-height: 300px;
       overflow: auto;
       color: #cfe8ff;
       font-family: Consolas, "Courier New", monospace;
-      font-size: 0.8rem;
-      line-height: 1.45;
+      font-size: 0.9rem;
+      line-height: 1.65;
       white-space: pre;
     }
 
     @media (max-width: 860px) {
+      .left-plugin {
+        position: static;
+        width: auto;
+        margin: 0 0 14px;
+      }
+      .app {
+        margin-left: auto;
+      }
       .group-4,
       .group-3,
       .group-2 {
-        grid-column: span 6;
+        grid-column: span 1;
       }
       .btn-row {
         grid-template-columns: repeat(3, 1fr);
@@ -420,7 +536,7 @@
       .group-4,
       .group-3,
       .group-2 {
-        grid-column: span 12;
+        grid-column: span 1;
       }
       .btn-row {
         grid-template-columns: repeat(2, 1fr);
@@ -432,6 +548,21 @@
   </style>
 </head>
 <body>
+  <aside class="left-plugin">
+    <p class="left-plugin-title">側邊控制面板</p>
+    <div class="control-group group-4">
+      <label for="sizeRange">資料數量</label>
+      <input id="sizeRange" type="range" min="5" max="60" value="20" />
+      <div class="value" id="sizeValue">20 筆</div>
+    </div>
+
+    <div class="control-group group-4">
+      <label for="speedRange">動畫速度</label>
+      <input id="speedRange" type="range" min="1" max="100" value="45" />
+      <div class="value" id="speedValue">中速（每步 145ms）</div>
+    </div>
+  </aside>
+
   <div class="app">
     <div class="top-nav">
       <a class="back-link" href="index.html">回到主畫面</a>
@@ -456,18 +587,6 @@
         </select>
       </div>
 
-      <div class="control-group group-4">
-        <label for="sizeRange">資料數量</label>
-        <input id="sizeRange" type="range" min="5" max="60" value="20" />
-        <div class="value" id="sizeValue">20 筆</div>
-      </div>
-
-      <div class="control-group group-4">
-        <label for="speedRange">動畫速度</label>
-        <input id="speedRange" type="range" min="1" max="100" value="45" />
-        <div class="value" id="speedValue">中速（每步 145ms）</div>
-      </div>
-
       <div class="btn-row">
         <button id="generateBtn">重新產生資料</button>
         <button id="startBtn">開始播放</button>
@@ -487,7 +606,13 @@
     </div>
 
     <div class="complexity-box">
-      <div id="complexityTitle" class="complexity-title">時間複雜度（氣泡排序）</div>
+      <div class="complexity-title-row">
+        <div id="complexityTitle" class="complexity-title">時間複雜度（氣泡排序）</div>
+        <span class="complexity-help" tabindex="0" aria-label="時間複雜度說明">?</span>
+        <div id="complexityHintBody" class="complexity-tooltip">
+          <p>時間複雜度描述輸入規模 n 增大時，演算法步驟數的成長速度。氣泡排序每輪比較相鄰元素，約需 (n-1)+(n-2)+...+1 次比較，因此平均/最差為 O(n²)；若某輪零交換可提前停止，最佳為 O(n)。</p>
+        </div>
+      </div>
       <div class="complexity-grid">
         <div class="complexity-item">
           <div class="complexity-label">Best</div>
@@ -516,6 +641,10 @@
       <div class="algo-explain-card">
         <div class="algo-explain-title">核心想法</div>
         <div id="algoIdea" class="algo-explain-text">每一輪都把當前最大值推到尾端，並用是否發生交換來提前結束。</div>
+      </div>
+      <div class="algo-explain-card">
+        <div class="algo-explain-title">歷史背景</div>
+        <div id="algoHistory" class="algo-explain-text">已知最早可追溯到 1956 年 Edward H. Friend 的交換排序描述；後來被廣泛教學並稱為 Bubble Sort。</div>
       </div>
     </div>
 
@@ -573,8 +702,10 @@
     const avgComplexityEl = document.getElementById('avgComplexity');
     const worstComplexityEl = document.getElementById('worstComplexity');
     const spaceComplexityEl = document.getElementById('spaceComplexity');
+    const complexityHintBodyEl = document.getElementById('complexityHintBody');
     const algoDefinitionEl = document.getElementById('algoDefinition');
     const algoIdeaEl = document.getElementById('algoIdea');
+    const algoHistoryEl = document.getElementById('algoHistory');
     const cppCodeEl = document.getElementById('cppCode');
     const pythonCodeEl = document.getElementById('pythonCode');
     const copyCppBtn = document.getElementById('copyCppBtn');
@@ -585,8 +716,10 @@
       bubble: {
         label: '氣泡排序 Bubble Sort',
         complexity: { best: 'O(n)', avg: 'O(n²)', worst: 'O(n²)', space: 'O(1)' },
+        complexityHint: '時間複雜度是看 n 增大時，操作次數如何成長。Bubble Sort 每輪將最大值往右推，總比較約為 (n-1)+(n-2)+...+1 = n(n-1)/2，所以平均/最差是 O(n²)；若某輪沒有交換可提前結束，最佳可到 O(n)。',
         definition: '透過重複比較相鄰兩個元素並在必要時交換，逐步把較大元素往陣列尾端移動。',
         idea: '每一輪會把當前最大值固定在右側；若某輪完全沒有交換，代表已排序可提前結束。',
+        history: '最早可追溯到 1956 年 Edward H. Friend 的交換式排序描述；之後 Kenneth E. Iverson 等人推廣名稱 Bubble Sort。',
         cpp: `void bubbleSort(vector<int>& a) {
   int n = (int)a.size();
   for (int i = 0; i < n - 1; ++i) {
@@ -614,8 +747,10 @@
       selection: {
         label: '選擇排序 Selection Sort',
         complexity: { best: 'O(n²)', avg: 'O(n²)', worst: 'O(n²)', space: 'O(1)' },
+        complexityHint: 'Selection Sort 不論資料是否有序，都要在每一輪掃描剩餘元素找最小值。比較次數固定約為 (n-1)+(n-2)+...+1 = n(n-1)/2，因此最佳、平均、最差皆為 O(n²)。',
         definition: '每一輪從未排序區間中找出最小值，放到未排序區間的最前面。',
         idea: '把陣列分成已排序與未排序兩段，每次只做一次定位交換，逐步擴大左側已排序區。',
+        history: '屬於早期電腦科學教材即常見的基礎排序法，因流程穩定、概念直觀，長期用於教學與複雜度分析。',
         cpp: `void selectionSort(vector<int>& a) {
   int n = (int)a.size();
   for (int i = 0; i < n - 1; ++i) {
@@ -639,8 +774,10 @@
       insertion: {
         label: '插入排序 Insertion Sort',
         complexity: { best: 'O(n)', avg: 'O(n²)', worst: 'O(n²)', space: 'O(1)' },
+        complexityHint: 'Insertion Sort 把第 i 個元素插入前面已排序區。最佳情況（原本幾乎有序）每次只比較一次，總共約 n-1 次為 O(n)；平均與逆序最差情況要反覆左移，總操作接近 1+2+...+(n-1)，所以是 O(n²)。',
         definition: '每次取出下一個元素，插入到左側已排序子陣列中的正確位置。',
         idea: '維持左側永遠有序；新元素往左比較，遇到較大值就右移，最後把 key 放入空位。',
+        history: '概念源自人類整理紙牌的直覺流程，早期資料處理與教科書中已廣泛使用，至今仍常作為小資料排序的實務優化。',
         cpp: `void insertionSort(vector<int>& a) {
   for (int i = 1; i < (int)a.size(); ++i) {
     int key = a[i];
@@ -664,8 +801,10 @@
       quick: {
         label: '快速排序 Quick Sort',
         complexity: { best: 'O(n log n)', avg: 'O(n log n)', worst: 'O(n²)', space: 'O(log n)' },
+        complexityHint: 'Quick Sort 透過 partition 把問題切成左右子問題。若每次都切得平衡，遞迴深度約 log n、每層處理量約 n，故為 O(n log n)；若 pivot 一直選得很差（切成 0 與 n-1），會退化成 O(n²)。',
         definition: '選一個 pivot，將資料分成小於等於 pivot 與大於 pivot 的兩側，再遞迴排序。',
         idea: '關鍵在 partition：每次把 pivot 放到最終位置，問題自然拆成左右兩個更小子問題。',
+        history: '由 Tony Hoare 於 1959 年提出，1961/1962 年發表後迅速普及，後續經 Sedgewick 與 Bentley 等人改良成為業界常用排序核心。',
         cpp: `int partition(vector<int>& a, int l, int r) {
   int pivot = a[r], i = l - 1;
   for (int j = l; j < r; ++j) {
@@ -944,8 +1083,10 @@ def quick_sort(arr, l, r):
       avgComplexityEl.textContent = info.complexity.avg;
       worstComplexityEl.textContent = info.complexity.worst;
       spaceComplexityEl.textContent = info.complexity.space;
+      complexityHintBodyEl.textContent = info.complexityHint;
       algoDefinitionEl.textContent = info.definition;
       algoIdeaEl.textContent = info.idea;
+      algoHistoryEl.textContent = info.history;
       cppCodeEl.textContent = info.cpp;
       pythonCodeEl.textContent = info.py;
     }
