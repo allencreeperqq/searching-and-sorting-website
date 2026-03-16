@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>自我介紹</title>
+  <style>
+    :root {
+      --bg-1: #0b1324;
+      --bg-2: #132a45;
+      --panel: rgba(15, 23, 42, 0.82);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-2: #0ea5e9;
+      --border: rgba(148, 163, 184, 0.3);
+    }
+
+    * { box-sizing: border-box; }
+
+    @keyframes pageFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      font-family: "Segoe UI", "Noto Sans TC", sans-serif;
+      color: var(--text);
+      background:
+        linear-gradient(145deg, rgba(11, 19, 36, 0.75), rgba(19, 42, 69, 0.75)),
+        radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.15), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(14, 165, 233, 0.15), transparent 35%),
+        url("menu-picr.jpg") center/cover no-repeat;
+    }
+
+    .intro-card {
+      width: min(720px, 100%);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--panel);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 24px 45px rgba(0, 0, 0, 0.35);
+      padding: 28px;
+      animation: pageFadeIn 0.75s ease-out both;
+    }
+
+    .student-header {
+      margin-bottom: 16px;
+      padding: 10px 12px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 10px;
+      background: rgba(2, 6, 23, 0.45);
+      text-align: left;
+    }
+
+    .student-header-title {
+      margin: 0 0 6px;
+      font-size: 1rem;
+      color: #dbeafe;
+    }
+
+    .student-header-meta {
+      margin: 0;
+      color: #cbd5e1;
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.6rem, 2.8vw, 2rem);
+      letter-spacing: 0.02em;
+    }
+
+    .intro-box {
+      margin-top: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 10px;
+      background: rgba(2, 6, 23, 0.45);
+      padding: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .intro-box p {
+      margin: 0;
+    }
+
+    .intro-list {
+      margin: 0;
+      padding-left: 1.2rem;
+      color: #cbd5e1;
+      line-height: 1.8;
+    }
+
+    .social-list {
+      margin-top: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .social-box {
+      margin-top: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 10px;
+      background: rgba(2, 6, 23, 0.45);
+      padding: 14px;
+    }
+
+    .social-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #dbeafe;
+      font-size: 0.95rem;
+    }
+
+    .social-item a {
+      color: #7dd3fc;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s ease;
+    }
+
+    .social-item a:hover {
+      border-bottom-color: #7dd3fc;
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      color: #c4b5fd;
+    }
+
+    .hint {
+      margin-top: 10px;
+      color: #bfdbfe;
+      font-size: 0.92rem;
+    }
+
+    .actions {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .back-link {
+      display: inline-block;
+      min-width: 220px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      text-decoration: none;
+      text-align: center;
+      color: #f8fafc;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: 1px solid rgba(125, 211, 252, 0.6);
+      font-weight: 600;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .back-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(14, 165, 233, 0.35);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .intro-card {
+        animation: none;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .intro-card {
+        padding: 22px 16px;
+      }
+
+      .back-link {
+        width: 100%;
+        min-width: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="intro-card">
+    <div class="student-header">
+      <h2 class="student-header-title">個人資料</h2>
+      <p class="student-header-meta">姓名：潘宇綸 | 學校：中原大學 | 科系：電機系</p>
+    </div>
+
+    <h1>自我介紹</h1>
+
+    <section class="intro-box">
+      <ul class="intro-list">
+        <li>姓名：潘宇綸</li>
+        <li>學校：中原大學</li>
+        <li>科系：電機系</li>
+        <li>興趣：電吉他</li>
+        <li>正在做的事：試著在中原大學校內嚕到貓、自己製作一個效果器！</li>
+      </ul>
+      <p class="hint" style="margin-top: 10px;">自我介紹：你好，我是 Allen，本名潘宇綸，目前就讀中原大學電機系，從小學時就對電腦很感興趣，國小就開始關注科技圈，國中時加入全校的電腦維修志工團隊，負責全校的電腦營運及維修工作。高中發現自己對軟體比較沒有緣分，所以放棄資工來攻讀電機，但是依然對資安及網路很有興趣，目前正在學習 vibe coding，如果有任何問題或是想要一起玩音樂，歡迎找我！</p>
+    </section>
+
+    <section class="social-box">
+      <div class="social-list">
+        <div class="social-item">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.8" />
+            <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8" />
+            <circle cx="17.2" cy="6.8" r="1.2" fill="currentColor" />
+          </svg>
+          <span>Instagram：<a href="https://www.instagram.com/allen_87_2/" target="_blank" rel="noopener noreferrer">https://www.instagram.com/allen_87_2/</a></span>
+        </div>
+
+        <div class="social-item">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M7.5 7.2C9 6 10.5 5.4 12 5.4C13.5 5.4 15 6 16.5 7.2C17.6 7 18.7 6.7 19.7 6.2C20.4 7.6 20.7 9.1 20.7 10.7C20.7 14.5 18.6 17.1 15 18.1C14.6 17.5 14.3 16.9 14.2 16.2C14.8 15.8 15.2 15.2 15.2 14.5V11.3C14.3 11.7 13.2 11.9 12 11.9C10.8 11.9 9.7 11.7 8.8 11.3V14.5C8.8 15.2 9.2 15.8 9.8 16.2C9.7 16.9 9.4 17.5 9 18.1C5.4 17.1 3.3 14.5 3.3 10.7C3.3 9.1 3.6 7.6 4.3 6.2C5.3 6.7 6.4 7 7.5 7.2Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+            <circle cx="9.5" cy="10.2" r="1" fill="currentColor" />
+            <circle cx="14.5" cy="10.2" r="1" fill="currentColor" />
+          </svg>
+          <span>Discord：_beta.decay</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="actions">
+      <a class="back-link" href="index.html">回到主選單</a>
+    </div>
+  </main>
+</body>
+</html>
