@@ -1,0 +1,1215 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>搜尋法學習視覺化</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --bar: #60a5fa;
+      --range: #a78bfa;
+      --compare: #f59e0b;
+      --found: #22c55e;
+      --checked: #475569;
+    }
+
+    * { box-sizing: border-box; }
+
+    @keyframes pageFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Noto Sans TC", sans-serif;
+      font-size: 17px;
+      line-height: 1.6;
+      background-color: #0f172a;
+      background-image:
+        linear-gradient(135deg, rgba(2, 6, 23, 0.78) 0%, rgba(17, 24, 39, 0.78) 100%),
+        url("menu-picr.jpg");
+      background-position: center center, center center;
+      background-repeat: no-repeat, no-repeat;
+      background-size: auto, cover;
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .left-plugin {
+      position: fixed;
+      left: 18px;
+      top: 110px;
+      width: 250px;
+      z-index: 30;
+      display: grid;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 12px;
+      background: rgba(2, 6, 23, 0.62);
+      backdrop-filter: blur(12px) saturate(135%);
+      -webkit-backdrop-filter: blur(12px) saturate(135%);
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.34);
+      animation: pageFadeIn 0.72s ease-out both;
+    }
+
+    .left-plugin-title {
+      margin: 0;
+      font-size: 0.92rem;
+      color: #dbeafe;
+      letter-spacing: 0.02em;
+    }
+
+    .app {
+      max-width: 1100px;
+      margin: 0 auto;
+      margin-left: 290px;
+      background: rgba(15, 23, 42, 0.62);
+      border: 1px solid rgba(191, 219, 254, 0.28);
+      border-radius: 16px;
+      padding: 28px;
+      backdrop-filter: blur(14px) saturate(135%);
+      -webkit-backdrop-filter: blur(14px) saturate(135%);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
+      animation: pageFadeIn 0.9s ease-out both;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .left-plugin,
+      .app {
+        animation: none;
+      }
+    }
+
+    .student-header {
+      margin-bottom: 18px;
+      padding: 14px 16px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 10px;
+      background: rgba(2, 6, 23, 0.45);
+    }
+
+    .student-header-title {
+      margin: 0 0 6px;
+      font-size: 1.1rem;
+      color: #dbeafe;
+    }
+
+    .student-header-meta {
+      margin: 0;
+      color: #cbd5e1;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    .top-nav {
+      margin: 0 0 10px;
+    }
+
+    .back-link {
+      color: #93c5fd;
+      text-decoration: none;
+      font-size: 0.9rem;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s ease;
+    }
+
+    .back-link:hover {
+      border-bottom-color: #93c5fd;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 1.9rem;
+    }
+
+    p.desc {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .control-group {
+      background: rgba(2, 6, 23, 0.55);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 10px;
+      padding: 14px;
+      min-height: 96px;
+    }
+
+    .target-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .target-row button {
+      width: auto;
+      min-width: 130px;
+    }
+
+    label {
+      display: block;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+
+    select,
+    input[type="range"],
+    input[type="number"],
+    button {
+      width: 100%;
+    }
+
+    select,
+    input[type="number"],
+    button {
+      height: 40px;
+      border-radius: 8px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      background: #0b1220;
+      color: var(--text);
+      padding: 0 12px;
+      font-size: 0.95rem;
+    }
+
+    button {
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button:hover:not(:disabled) {
+      border-color: rgba(96, 165, 250, 0.9);
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .btn-row {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+    }
+
+    .value {
+      color: #cbd5e1;
+      font-size: 1rem;
+      margin-top: 8px;
+    }
+
+    .data-note {
+      margin: 10px 0 0;
+      color: #93c5fd;
+      font-size: 0.92rem;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px 24px;
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+
+    .chart-wrap {
+      height: 360px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 10px;
+      background: rgba(2, 6, 23, 0.55);
+      padding: 14px;
+      overflow: hidden;
+    }
+
+    .chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 100%;
+      width: 100%;
+    }
+
+    .bar {
+      flex: 1;
+      min-width: 6px;
+      background: var(--bar);
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+      position: relative;
+      transition: height 0.18s linear, background-color 0.12s linear;
+    }
+
+    .bar span {
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.82rem;
+      color: #cbd5e1;
+      user-select: none;
+    }
+
+    .bar.in-range { background: var(--range); }
+    .bar.checked { background: var(--checked); }
+    .bar.compare { background: var(--compare); }
+    .bar.found { background: var(--found); }
+
+    .status {
+      margin-top: 16px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .status-box {
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      background: rgba(2, 6, 23, 0.45);
+      padding: 14px;
+      min-height: 72px;
+    }
+
+    .status-title {
+      font-size: 0.92rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .status-text {
+      font-size: 1.05rem;
+      color: #dbeafe;
+    }
+
+    .step-counter {
+      font-size: 1rem;
+      color: #cbd5e1;
+      white-space: nowrap;
+    }
+
+    .complexity-box {
+      margin-bottom: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 10px;
+      background: rgba(2, 6, 23, 0.45);
+      padding: 14px;
+    }
+
+    .complexity-title {
+      font-size: 1rem;
+      color: #dbeafe;
+      margin-bottom: 12px;
+    }
+
+    .complexity-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .complexity-item {
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      padding: 12px;
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    .complexity-label {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    .complexity-value {
+      color: #e2e8f0;
+      font-size: 1.08rem;
+      font-weight: 600;
+    }
+
+    .algo-explain-box {
+      margin-bottom: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 10px;
+      background: rgba(2, 6, 23, 0.45);
+      padding: 14px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .algo-explain-card {
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.6);
+      padding: 12px;
+    }
+
+    .algo-explain-title {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    .algo-explain-text {
+      color: #e2e8f0;
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
+    .code-section {
+      margin-top: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 10px;
+      background: rgba(2, 6, 23, 0.45);
+      padding: 14px;
+    }
+
+    .code-section-title {
+      font-size: 1rem;
+      color: #dbeafe;
+      margin-bottom: 12px;
+    }
+
+    .code-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .code-card {
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(15, 23, 42, 0.65);
+    }
+
+    .code-card-title {
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+      background: rgba(2, 6, 23, 0.65);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .copy-btn {
+      width: auto;
+      height: 32px;
+      font-size: 0.86rem;
+      padding: 0 10px;
+      border-radius: 7px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      background: #0b1220;
+      color: #dbeafe;
+      cursor: pointer;
+    }
+
+    .copy-hint {
+      margin-top: 10px;
+      color: #93c5fd;
+      font-size: 0.92rem;
+      min-height: 22px;
+    }
+
+    .code-card pre {
+      margin: 0;
+      padding: 14px;
+      max-height: 300px;
+      overflow: auto;
+      color: #cfe8ff;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.9rem;
+      line-height: 1.65;
+      white-space: pre;
+    }
+
+    @media (max-width: 860px) {
+      .left-plugin {
+        position: static;
+        width: auto;
+        margin: 0 0 14px;
+      }
+      .app {
+        margin-left: auto;
+      }
+      .btn-row {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .complexity-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .code-grid {
+        grid-template-columns: 1fr;
+      }
+      .algo-explain-box {
+        grid-template-columns: 1fr;
+      }
+      .target-row {
+        grid-template-columns: 1fr;
+      }
+      .target-row button {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .btn-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .bar span {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <aside class="left-plugin">
+    <p class="left-plugin-title">側邊控制面板</p>
+    <div class="control-group">
+      <label for="sizeRange">資料數量</label>
+      <input id="sizeRange" type="range" min="8" max="50" value="20" />
+      <div class="value" id="sizeValue">20 筆</div>
+    </div>
+
+    <div class="control-group">
+      <label for="speedRange">動畫速度</label>
+      <input id="speedRange" type="range" min="1" max="100" value="45" />
+      <div class="value" id="speedValue">中速（每步 145ms）</div>
+    </div>
+
+    <div class="control-group">
+      <div class="target-row">
+        <div>
+          <label for="targetInput">目標值（Target）</label>
+          <input id="targetInput" type="number" value="30" />
+        </div>
+        <button id="randomTargetBtn" type="button">隨機目標</button>
+      </div>
+      <p id="dataNote" class="data-note">資料已自動排序，適合二分搜尋與跳躍搜尋。</p>
+    </div>
+  </aside>
+
+  <div class="app">
+    <div class="top-nav">
+      <a class="back-link" href="index.html">回到主畫面</a>
+    </div>
+
+    <div class="student-header">
+      <h2 class="student-header-title">個人資訊</h2>
+      <p class="student-header-meta">姓名：潘宇綸 | 學號：11428109 | 班級：電機一甲</p>
+    </div>
+
+    <h1>搜尋法步驟動畫（學習版）</h1>
+    <p class="desc">包含線性搜尋、二分搜尋與跳躍搜尋。可調整資料筆數、目標值與動畫速度，逐步觀察每次比較與範圍縮小。</p>
+
+    <div class="complexity-box">
+      <div id="complexityTitle" class="complexity-title">時間複雜度（線性搜尋）</div>
+      <div class="complexity-grid">
+        <div class="complexity-item">
+          <div class="complexity-label">Best</div>
+          <div id="bestComplexity" class="complexity-value">O(1)</div>
+        </div>
+        <div class="complexity-item">
+          <div class="complexity-label">Average</div>
+          <div id="avgComplexity" class="complexity-value">O(n)</div>
+        </div>
+        <div class="complexity-item">
+          <div class="complexity-label">Worst</div>
+          <div id="worstComplexity" class="complexity-value">O(n)</div>
+        </div>
+        <div class="complexity-item">
+          <div class="complexity-label">Space</div>
+          <div id="spaceComplexity" class="complexity-value">O(1)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="algo-explain-box">
+      <div class="algo-explain-card">
+        <div class="algo-explain-title">演算法定義</div>
+        <div id="algoDefinition" class="algo-explain-text">從左到右逐一比較每個元素，直到找到目標值或走完整個陣列。</div>
+      </div>
+      <div class="algo-explain-card">
+        <div class="algo-explain-title">核心想法</div>
+        <div id="algoIdea" class="algo-explain-text">不需要額外前提，直接檢查每個位置；資料未排序時也可使用。</div>
+      </div>
+      <div class="algo-explain-card">
+        <div class="algo-explain-title">歷史背景</div>
+        <div id="algoHistory" class="algo-explain-text">線性掃描是最早被使用的查找方法，適合資料量小或不常查找的情境。</div>
+      </div>
+    </div>
+
+      <div class="controls">
+        <div class="control-group">
+          <label for="algorithm">搜尋法</label>
+          <select id="algorithm">
+            <option value="linear">線性搜尋 Linear Search</option>
+            <option value="binary">二分搜尋 Binary Search</option>
+            <option value="jump">跳躍搜尋 Jump Search</option>
+          </select>
+        </div>
+
+        <div class="btn-row">
+          <button id="generateBtn">重新產生資料</button>
+          <button id="startBtn">開始播放</button>
+          <button id="pauseBtn" disabled>暫停</button>
+          <button id="stepBtn">下一步</button>
+          <button id="prevBtn">上一步</button>
+          <button id="resetBtn">重置</button>
+        </div>
+      </div>
+
+      <div class="legend">
+        <span class="legend-item"><span class="dot" style="background: var(--bar)"></span>一般</span>
+        <span class="legend-item"><span class="dot" style="background: var(--range)"></span>目前搜尋範圍</span>
+        <span class="legend-item"><span class="dot" style="background: var(--checked)"></span>已檢查位置</span>
+        <span class="legend-item"><span class="dot" style="background: var(--compare)"></span>比較中</span>
+        <span class="legend-item"><span class="dot" style="background: var(--found)"></span>找到目標</span>
+      </div>
+
+    <div class="chart-wrap">
+      <div id="chart" class="chart"></div>
+    </div>
+
+    <div class="status">
+      <div class="status-box">
+        <div class="status-title">步驟說明</div>
+        <div id="statusText" class="status-text">請按「開始播放」或「下一步」。</div>
+      </div>
+      <div id="stepCounter" class="step-counter">步驟：0 / 0</div>
+    </div>
+
+    <div class="code-section">
+      <div class="code-section-title">演算法參考程式碼</div>
+      <div class="code-grid">
+        <div class="code-card">
+          <div class="code-card-title">
+            <span>C++</span>
+            <button id="copyCppBtn" class="copy-btn" type="button">一鍵複製</button>
+          </div>
+          <pre><code id="cppCode"></code></pre>
+        </div>
+        <div class="code-card">
+          <div class="code-card-title">
+            <span>Python</span>
+            <button id="copyPythonBtn" class="copy-btn" type="button">一鍵複製</button>
+          </div>
+          <pre><code id="pythonCode"></code></pre>
+        </div>
+      </div>
+      <div id="copyHint" class="copy-hint"></div>
+    </div>
+  </div>
+
+  <script>
+    const algorithmEl = document.getElementById('algorithm');
+    const sizeRangeEl = document.getElementById('sizeRange');
+    const speedRangeEl = document.getElementById('speedRange');
+    const targetInputEl = document.getElementById('targetInput');
+    const randomTargetBtn = document.getElementById('randomTargetBtn');
+    const sizeValueEl = document.getElementById('sizeValue');
+    const speedValueEl = document.getElementById('speedValue');
+    const dataNoteEl = document.getElementById('dataNote');
+    const generateBtn = document.getElementById('generateBtn');
+    const startBtn = document.getElementById('startBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const stepBtn = document.getElementById('stepBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const chartEl = document.getElementById('chart');
+    const statusTextEl = document.getElementById('statusText');
+    const stepCounterEl = document.getElementById('stepCounter');
+    const complexityTitleEl = document.getElementById('complexityTitle');
+    const bestComplexityEl = document.getElementById('bestComplexity');
+    const avgComplexityEl = document.getElementById('avgComplexity');
+    const worstComplexityEl = document.getElementById('worstComplexity');
+    const spaceComplexityEl = document.getElementById('spaceComplexity');
+    const algoDefinitionEl = document.getElementById('algoDefinition');
+    const algoIdeaEl = document.getElementById('algoIdea');
+    const algoHistoryEl = document.getElementById('algoHistory');
+    const cppCodeEl = document.getElementById('cppCode');
+    const pythonCodeEl = document.getElementById('pythonCode');
+    const copyCppBtn = document.getElementById('copyCppBtn');
+    const copyPythonBtn = document.getElementById('copyPythonBtn');
+    const copyHintEl = document.getElementById('copyHint');
+
+    const ALGO_INFO = {
+      linear: {
+        label: '線性搜尋 Linear Search',
+        complexity: { best: 'O(1)', avg: 'O(n)', worst: 'O(n)', space: 'O(1)' },
+        definition: '從頭到尾逐一比較每個元素，找到目標就停止。',
+        idea: '沒有排序前提，流程最直觀，適合小型資料與一次性查找。',
+        history: '線性掃描是最早且最直覺的查找策略，常用於基礎演算法教學。',
+        cpp: `int linearSearch(const vector<int>& a, int target) {
+  for (int i = 0; i < (int)a.size(); ++i) {
+    if (a[i] == target) return i;
+  }
+  return -1;
+}`,
+        py: `def linear_search(arr, target):
+    for i, value in enumerate(arr):
+        if value == target:
+            return i
+    return -1`
+      },
+      binary: {
+        label: '二分搜尋 Binary Search',
+        complexity: { best: 'O(1)', avg: 'O(log n)', worst: 'O(log n)', space: 'O(1)' },
+        definition: '在已排序陣列中，每次取中間值比較並把搜尋範圍砍半。',
+        idea: '靠排序資料與區間收斂，快速排除不可能區段。',
+        history: '二分法思想可追溯至古代數學，程式化版本在現代電腦科學中成為經典。',
+        cpp: `int binarySearch(const vector<int>& a, int target) {
+  int l = 0, r = (int)a.size() - 1;
+  while (l <= r) {
+    int m = l + (r - l) / 2;
+    if (a[m] == target) return m;
+    if (a[m] < target) l = m + 1;
+    else r = m - 1;
+  }
+  return -1;
+}`,
+        py: `def binary_search(arr, target):
+    l, r = 0, len(arr) - 1
+    while l <= r:
+        m = l + (r - l) // 2
+        if arr[m] == target:
+            return m
+        if arr[m] < target:
+            l = m + 1
+        else:
+            r = m - 1
+    return -1`
+      },
+      jump: {
+        label: '跳躍搜尋 Jump Search',
+        complexity: { best: 'O(1)', avg: 'O(√n)', worst: 'O(√n)', space: 'O(1)' },
+        definition: '先用固定步長跳躍定位區塊，再在區塊內線性搜尋。',
+        idea: '折衷線性搜尋與二分搜尋，減少比較次數但維持簡單流程。',
+        history: 'Jump Search 是經典教學演算法之一，常用於說明以區塊縮小範圍的想法。',
+        cpp: `int jumpSearch(const vector<int>& a, int target) {
+  int n = (int)a.size();
+  int step = (int)sqrt(n);
+  int prev = 0;
+
+  while (prev < n && a[min(step, n) - 1] < target) {
+    prev = step;
+    step += (int)sqrt(n);
+    if (prev >= n) return -1;
+  }
+
+  for (int i = prev; i < min(step, n); ++i) {
+    if (a[i] == target) return i;
+  }
+  return -1;
+}`,
+        py: `import math
+
+def jump_search(arr, target):
+    n = len(arr)
+    step = int(math.sqrt(n))
+    prev = 0
+
+    while prev < n and arr[min(step, n) - 1] < target:
+        prev = step
+        step += int(math.sqrt(n))
+        if prev >= n:
+            return -1
+
+    for i in range(prev, min(step, n)):
+        if arr[i] == target:
+            return i
+    return -1`
+      }
+    };
+
+    let originalData = [];
+    let workingData = [];
+    let steps = [];
+    let currentStep = 0;
+    let timer = null;
+
+    function randomSortedData(length) {
+      const data = [];
+      let value = Math.floor(Math.random() * 8) + 5;
+      for (let i = 0; i < length; i++) {
+        value += Math.floor(Math.random() * 9) + 1;
+        data.push(value);
+      }
+      return data;
+    }
+
+    function speedToMs(speedValue) {
+      return Math.max(20, 280 - Number(speedValue) * 3);
+    }
+
+    function speedLabel(speedValue) {
+      const ms = speedToMs(speedValue);
+      const tag = speedValue < 30 ? '慢速' : speedValue < 70 ? '中速' : '高速';
+      return `${tag}（每步 ${ms}ms）`;
+    }
+
+    function makeStep(type, array, options = {}) {
+      return {
+        type,
+        array: [...array],
+        indices: options.indices || [],
+        inRange: options.inRange || [],
+        checked: options.checked || [],
+        foundIndex: options.foundIndex === undefined ? -1 : options.foundIndex,
+        text: options.text || ''
+      };
+    }
+
+    function rangeArray(low, high) {
+      if (low > high) return [];
+      const out = [];
+      for (let i = low; i <= high; i++) out.push(i);
+      return out;
+    }
+
+    function buildLinearSteps(source, target) {
+      const out = [makeStep('init', source, { text: `初始資料，目標值為 ${target}。` })];
+      const checked = [];
+
+      for (let i = 0; i < source.length; i++) {
+        checked.push(i);
+        out.push(makeStep('compare', source, {
+          indices: [i],
+          checked: [...checked],
+          text: `比較索引 ${i}，值為 ${source[i]}。`
+        }));
+
+        if (source[i] === target) {
+          out.push(makeStep('found', source, {
+            indices: [i],
+            checked: [...checked],
+            foundIndex: i,
+            text: `找到目標值 ${target}，位置在索引 ${i}。`
+          }));
+          out.push(makeStep('done', source, {
+            checked: [...checked],
+            foundIndex: i,
+            text: '搜尋完成。'
+          }));
+          return out;
+        }
+      }
+
+      out.push(makeStep('done', source, {
+        checked: [...checked],
+        text: `搜尋完成，找不到目標值 ${target}。`
+      }));
+      return out;
+    }
+
+    function buildBinarySteps(source, target) {
+      const out = [makeStep('init', source, { text: `初始資料（已排序），目標值為 ${target}。` })];
+      let low = 0;
+      let high = source.length - 1;
+      const checked = [];
+
+      while (low <= high) {
+        const currentRange = rangeArray(low, high);
+        out.push(makeStep('range', source, {
+          inRange: currentRange,
+          checked: [...checked],
+          text: `目前搜尋範圍：索引 ${low} 到 ${high}。`
+        }));
+
+        const mid = Math.floor((low + high) / 2);
+        checked.push(mid);
+        out.push(makeStep('compare', source, {
+          indices: [mid],
+          inRange: currentRange,
+          checked: [...checked],
+          text: `取中間索引 ${mid}（值 ${source[mid]}）與目標 ${target} 比較。`
+        }));
+
+        if (source[mid] === target) {
+          out.push(makeStep('found', source, {
+            indices: [mid],
+            inRange: currentRange,
+            checked: [...checked],
+            foundIndex: mid,
+            text: `找到目標值 ${target}，位置在索引 ${mid}。`
+          }));
+          out.push(makeStep('done', source, {
+            checked: [...checked],
+            foundIndex: mid,
+            text: '搜尋完成。'
+          }));
+          return out;
+        }
+
+        if (source[mid] < target) {
+          out.push(makeStep('range', source, {
+            checked: [...checked],
+            inRange: rangeArray(mid + 1, high),
+            text: `${source[mid]} < ${target}，丟棄左半邊，改搜右半邊。`
+          }));
+          low = mid + 1;
+        } else {
+          out.push(makeStep('range', source, {
+            checked: [...checked],
+            inRange: rangeArray(low, mid - 1),
+            text: `${source[mid]} > ${target}，丟棄右半邊，改搜左半邊。`
+          }));
+          high = mid - 1;
+        }
+      }
+
+      out.push(makeStep('done', source, {
+        checked: [...checked],
+        text: `搜尋完成，找不到目標值 ${target}。`
+      }));
+      return out;
+    }
+
+    function buildJumpSteps(source, target) {
+      const out = [makeStep('init', source, { text: `初始資料（已排序），目標值為 ${target}。` })];
+      const n = source.length;
+      const stepSize = Math.max(1, Math.floor(Math.sqrt(n)));
+      const checked = [];
+      let prev = 0;
+      let step = stepSize;
+
+      out.push(makeStep('range', source, {
+        inRange: rangeArray(0, Math.min(step, n) - 1),
+        checked: [],
+        text: `設定跳躍步長為 ${stepSize}。`
+      }));
+
+      while (prev < n && source[Math.min(step, n) - 1] < target) {
+        const blockEnd = Math.min(step, n) - 1;
+        checked.push(blockEnd);
+        out.push(makeStep('compare', source, {
+          indices: [blockEnd],
+          inRange: rangeArray(prev, blockEnd),
+          checked: [...checked],
+          text: `比較區塊尾端索引 ${blockEnd}（值 ${source[blockEnd]}）。`
+        }));
+
+        prev = step;
+        step += stepSize;
+
+        if (prev >= n) {
+          out.push(makeStep('done', source, {
+            checked: [...checked],
+            text: `搜尋完成，找不到目標值 ${target}。`
+          }));
+          return out;
+        }
+
+        out.push(makeStep('range', source, {
+          inRange: rangeArray(prev, Math.min(step, n) - 1),
+          checked: [...checked],
+          text: `目標較大，跳到下一個區塊。`
+        }));
+      }
+
+      const left = prev;
+      const right = Math.min(step, n) - 1;
+      out.push(makeStep('range', source, {
+        inRange: rangeArray(left, right),
+        checked: [...checked],
+        text: `在索引 ${left} 到 ${right} 的區塊內線性搜尋。`
+      }));
+
+      for (let i = left; i <= right; i++) {
+        checked.push(i);
+        out.push(makeStep('compare', source, {
+          indices: [i],
+          inRange: rangeArray(left, right),
+          checked: [...checked],
+          text: `比較索引 ${i}，值為 ${source[i]}。`
+        }));
+
+        if (source[i] === target) {
+          out.push(makeStep('found', source, {
+            indices: [i],
+            inRange: rangeArray(left, right),
+            checked: [...checked],
+            foundIndex: i,
+            text: `找到目標值 ${target}，位置在索引 ${i}。`
+          }));
+          out.push(makeStep('done', source, {
+            checked: [...checked],
+            foundIndex: i,
+            text: '搜尋完成。'
+          }));
+          return out;
+        }
+      }
+
+      out.push(makeStep('done', source, {
+        checked: [...checked],
+        text: `搜尋完成，找不到目標值 ${target}。`
+      }));
+      return out;
+    }
+
+    function getStepsByAlgorithm(name, source, target) {
+      if (name === 'linear') return buildLinearSteps(source, target);
+      if (name === 'binary') return buildBinarySteps(source, target);
+      return buildJumpSteps(source, target);
+    }
+
+    function render(state, highlight = [], inRange = [], checked = [], foundIndex = -1, type = 'init') {
+      chartEl.innerHTML = '';
+      const max = Math.max(...state, 1);
+
+      state.forEach((value, idx) => {
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        bar.style.height = `${(value / max) * 100}%`;
+
+        if (checked.includes(idx)) bar.classList.add('checked');
+        if (inRange.includes(idx)) bar.classList.add('in-range');
+
+        if (highlight.includes(idx)) {
+          if (type === 'found') bar.classList.add('found');
+          else bar.classList.add('compare');
+        }
+
+        if (foundIndex === idx) bar.classList.add('found');
+
+        const text = document.createElement('span');
+        text.textContent = value;
+        bar.appendChild(text);
+        chartEl.appendChild(bar);
+      });
+    }
+
+    function updateAlgorithmInfo() {
+      const info = ALGO_INFO[algorithmEl.value];
+      complexityTitleEl.textContent = `時間複雜度（${info.label}）`;
+      bestComplexityEl.textContent = info.complexity.best;
+      avgComplexityEl.textContent = info.complexity.avg;
+      worstComplexityEl.textContent = info.complexity.worst;
+      spaceComplexityEl.textContent = info.complexity.space;
+      algoDefinitionEl.textContent = info.definition;
+      algoIdeaEl.textContent = info.idea;
+      algoHistoryEl.textContent = info.history;
+      cppCodeEl.textContent = info.cpp;
+      pythonCodeEl.textContent = info.py;
+    }
+
+    async function copyText(text, languageName) {
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const temp = document.createElement('textarea');
+          temp.value = text;
+          document.body.appendChild(temp);
+          temp.select();
+          document.execCommand('copy');
+          document.body.removeChild(temp);
+        }
+        copyHintEl.textContent = `${languageName} 程式碼已複製到剪貼簿。`;
+      } catch (error) {
+        copyHintEl.textContent = `複製失敗，請手動複製 ${languageName} 程式碼。`;
+      }
+    }
+
+    function clampTarget() {
+      if (!originalData.length) return 0;
+      let value = Number(targetInputEl.value);
+      if (!Number.isFinite(value)) value = originalData[0];
+      value = Math.round(value);
+      targetInputEl.value = value;
+      return value;
+    }
+
+    function setTargetFromGeneratedData() {
+      if (!originalData.length) return;
+      const idx = Math.floor(Math.random() * originalData.length);
+      targetInputEl.value = String(originalData[idx]);
+    }
+
+    function updateTargetBounds() {
+      const min = originalData[0];
+      const max = originalData[originalData.length - 1];
+      targetInputEl.min = String(min);
+      targetInputEl.max = String(max);
+      dataNoteEl.textContent = `資料範圍：${min} 到 ${max}（已排序，適合二分搜尋與跳躍搜尋）。`;
+    }
+
+    function showStep(index) {
+      if (index < 0) index = 0;
+      if (index >= steps.length) index = steps.length - 1;
+      currentStep = index;
+      const s = steps[currentStep];
+      workingData = [...s.array];
+      render(workingData, s.indices, s.inRange, s.checked, s.foundIndex, s.type);
+      statusTextEl.textContent = s.text || '...';
+      stepCounterEl.textContent = `步驟：${currentStep + 1} / ${steps.length}`;
+
+      prevBtn.disabled = currentStep === 0;
+      stepBtn.disabled = currentStep >= steps.length - 1;
+    }
+
+    function stopPlay() {
+      if (timer) {
+        clearInterval(timer);
+        timer = null;
+      }
+      startBtn.disabled = false;
+      pauseBtn.disabled = true;
+      generateBtn.disabled = false;
+      algorithmEl.disabled = false;
+      sizeRangeEl.disabled = false;
+      targetInputEl.disabled = false;
+      randomTargetBtn.disabled = false;
+    }
+
+    function startPlay() {
+      if (timer) return;
+      if (currentStep >= steps.length - 1) return;
+
+      startBtn.disabled = true;
+      pauseBtn.disabled = false;
+      generateBtn.disabled = true;
+      algorithmEl.disabled = true;
+      sizeRangeEl.disabled = true;
+      targetInputEl.disabled = true;
+      randomTargetBtn.disabled = true;
+
+      timer = setInterval(() => {
+        if (currentStep >= steps.length - 1) {
+          stopPlay();
+          return;
+        }
+        showStep(currentStep + 1);
+      }, speedToMs(speedRangeEl.value));
+    }
+
+    function buildScenario() {
+      stopPlay();
+      updateAlgorithmInfo();
+      const target = clampTarget();
+      steps = getStepsByAlgorithm(algorithmEl.value, originalData, target);
+      showStep(0);
+    }
+
+    function generateNewData() {
+      stopPlay();
+      originalData = randomSortedData(Number(sizeRangeEl.value));
+      setTargetFromGeneratedData();
+      updateTargetBounds();
+      buildScenario();
+      statusTextEl.textContent = '新資料已產生，請開始播放或單步執行。';
+    }
+
+    function pickRandomTarget() {
+      if (!originalData.length) return;
+      const hitMode = Math.random() < 0.65;
+      if (hitMode) {
+        const idx = Math.floor(Math.random() * originalData.length);
+        targetInputEl.value = String(originalData[idx]);
+      } else {
+        // 故意挑一個不在陣列中的值，讓學生觀察找不到的流程。
+        targetInputEl.value = String(originalData[0] - 1);
+      }
+      buildScenario();
+      statusTextEl.textContent = `已設定新的目標值 ${targetInputEl.value}。`;
+    }
+
+    algorithmEl.addEventListener('change', () => {
+      buildScenario();
+      statusTextEl.textContent = '已切換搜尋法。';
+    });
+
+    sizeRangeEl.addEventListener('input', () => {
+      sizeValueEl.textContent = `${sizeRangeEl.value} 筆`;
+    });
+
+    sizeRangeEl.addEventListener('change', generateNewData);
+
+    speedRangeEl.addEventListener('input', () => {
+      speedValueEl.textContent = speedLabel(Number(speedRangeEl.value));
+      if (timer) {
+        stopPlay();
+        startPlay();
+      }
+    });
+
+    targetInputEl.addEventListener('change', () => {
+      buildScenario();
+      statusTextEl.textContent = `目標值已更新為 ${targetInputEl.value}。`;
+    });
+
+    generateBtn.addEventListener('click', generateNewData);
+    startBtn.addEventListener('click', startPlay);
+    pauseBtn.addEventListener('click', stopPlay);
+    randomTargetBtn.addEventListener('click', pickRandomTarget);
+    copyCppBtn.addEventListener('click', () => copyText(cppCodeEl.textContent, 'C++'));
+    copyPythonBtn.addEventListener('click', () => copyText(pythonCodeEl.textContent, 'Python'));
+
+    stepBtn.addEventListener('click', () => {
+      if (currentStep < steps.length - 1) showStep(currentStep + 1);
+    });
+
+    prevBtn.addEventListener('click', () => {
+      if (currentStep > 0) showStep(currentStep - 1);
+    });
+
+    resetBtn.addEventListener('click', () => {
+      stopPlay();
+      buildScenario();
+      statusTextEl.textContent = '已重置到初始步驟。';
+    });
+
+    function init() {
+      sizeValueEl.textContent = `${sizeRangeEl.value} 筆`;
+      speedValueEl.textContent = speedLabel(Number(speedRangeEl.value));
+      originalData = randomSortedData(Number(sizeRangeEl.value));
+      setTargetFromGeneratedData();
+      updateTargetBounds();
+      buildScenario();
+    }
+
+    init();
+  </script>
+</body>
+</html>
