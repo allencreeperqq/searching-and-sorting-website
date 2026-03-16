@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='0.9em' font-size='90'%3E%F0%9F%92%AB%3C/text%3E%3C/svg%3E" />
   <title>搜尋法學習視覺化</title>
   <style>
     :root {
@@ -42,6 +43,7 @@
       background-position: center center, center center;
       background-repeat: no-repeat, no-repeat;
       background-size: auto, cover;
+      background-attachment: fixed, fixed;
       color: var(--text);
       min-height: 100vh;
       padding: 20px;
@@ -50,17 +52,20 @@
     .left-plugin {
       position: fixed;
       left: 18px;
-      top: 110px;
+      top: 20px;
       width: 250px;
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      will-change: transform;
       z-index: 30;
       display: grid;
       gap: 12px;
       padding: 12px;
       border: 1px solid rgba(148, 163, 184, 0.25);
       border-radius: 12px;
-      background: rgba(2, 6, 23, 0.62);
-      backdrop-filter: blur(12px) saturate(135%);
-      -webkit-backdrop-filter: blur(12px) saturate(135%);
+      background: rgba(2, 6, 23, 0.78);
+      backdrop-filter: blur(8px) saturate(125%);
+      -webkit-backdrop-filter: blur(8px) saturate(125%);
       box-shadow: 0 14px 30px rgba(0, 0, 0, 0.34);
       animation: pageFadeIn 0.72s ease-out both;
     }
@@ -76,12 +81,12 @@
       max-width: 1100px;
       margin: 0 auto;
       margin-left: 290px;
-      background: rgba(15, 23, 42, 0.62);
+      background: rgba(15, 23, 42, 0.8);
       border: 1px solid rgba(191, 219, 254, 0.28);
       border-radius: 16px;
-      padding: 28px;
-      backdrop-filter: blur(14px) saturate(135%);
-      -webkit-backdrop-filter: blur(14px) saturate(135%);
+      padding: 34px;
+      backdrop-filter: blur(10px) saturate(125%);
+      -webkit-backdrop-filter: blur(10px) saturate(125%);
       box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
       animation: pageFadeIn 0.9s ease-out both;
     }
@@ -94,11 +99,11 @@
     }
 
     .student-header {
-      margin-bottom: 18px;
-      padding: 14px 16px;
+      margin-bottom: 24px;
+      padding: 18px 16px;
       border: 1px solid rgba(148, 163, 184, 0.25);
       border-radius: 10px;
-      background: rgba(2, 6, 23, 0.45);
+      background: rgba(2, 6, 23, 0.62);
     }
 
     .student-header-title {
@@ -115,7 +120,11 @@
     }
 
     .top-nav {
-      margin: 0 0 10px;
+      margin: 0 0 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
     }
 
     .back-link {
@@ -130,13 +139,31 @@
       border-bottom-color: #93c5fd;
     }
 
+    .report-link {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(56, 189, 248, 0.55);
+      color: #dbeafe;
+      text-decoration: none;
+      font-size: 0.9rem;
+      background: rgba(14, 165, 233, 0.16);
+      transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .report-link:hover {
+      transform: translateY(-1px);
+      border-color: rgba(125, 211, 252, 0.95);
+      background: rgba(14, 165, 233, 0.28);
+    }
+
     h1 {
-      margin: 0 0 10px;
+      margin: 0 0 16px;
       font-size: 1.9rem;
     }
 
     p.desc {
-      margin: 0 0 20px;
+      margin: 0 0 30px;
       color: var(--muted);
       font-size: 1.05rem;
     }
@@ -144,16 +171,16 @@
     .controls {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 14px;
-      margin-bottom: 20px;
+      gap: 18px;
+      margin-bottom: 28px;
     }
 
     .control-group {
-      background: rgba(2, 6, 23, 0.55);
+      background: rgba(2, 6, 23, 0.66);
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 10px;
-      padding: 14px;
-      min-height: 96px;
+      padding: 18px;
+      min-height: 110px;
     }
 
     .target-row {
@@ -163,16 +190,27 @@
       align-items: end;
     }
 
+    .left-plugin .target-row {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
     .target-row button {
       width: auto;
       min-width: 130px;
+    }
+
+    .left-plugin .target-row button {
+      width: 100%;
+      min-width: 0;
     }
 
     label {
       display: block;
       color: var(--muted);
       font-size: 0.9rem;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     select,
@@ -209,6 +247,25 @@
       cursor: not-allowed;
     }
 
+    #startBtn {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border: 1px solid rgba(134, 239, 172, 0.9);
+      color: #f0fdf4;
+      font-weight: 700;
+      box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.25), 0 10px 20px rgba(22, 163, 74, 0.28);
+    }
+
+    #startBtn:hover:not(:disabled) {
+      border-color: rgba(187, 247, 208, 1);
+      box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.42), 0 14px 28px rgba(22, 163, 74, 0.38);
+      transform: translateY(-2px) scale(1.01);
+    }
+
+    #startBtn:disabled {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.75), rgba(22, 163, 74, 0.75));
+      color: rgba(240, 253, 244, 0.9);
+    }
+
     .btn-row {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
@@ -218,11 +275,11 @@
     .value {
       color: #cbd5e1;
       font-size: 1rem;
-      margin-top: 8px;
+      margin-top: 12px;
     }
 
     .data-note {
-      margin: 10px 0 0;
+      margin: 14px 0 0;
       color: #93c5fd;
       font-size: 0.92rem;
     }
@@ -233,7 +290,7 @@
       gap: 14px 24px;
       font-size: 0.95rem;
       color: var(--muted);
-      margin-bottom: 16px;
+      margin-bottom: 22px;
     }
 
     .legend-item {
@@ -253,7 +310,7 @@
       height: 360px;
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 10px;
-      background: rgba(2, 6, 23, 0.55);
+      background: rgba(2, 6, 23, 0.66);
       padding: 14px;
       overflow: hidden;
     }
@@ -292,19 +349,19 @@
     .bar.found { background: var(--found); }
 
     .status {
-      margin-top: 16px;
+      margin-top: 24px;
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 14px;
+      gap: 18px;
       align-items: center;
     }
 
     .status-box {
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 8px;
-      background: rgba(2, 6, 23, 0.45);
-      padding: 14px;
-      min-height: 72px;
+      background: rgba(2, 6, 23, 0.6);
+      padding: 18px;
+      min-height: 86px;
     }
 
     .status-title {
@@ -325,11 +382,11 @@
     }
 
     .complexity-box {
-      margin-bottom: 16px;
+      margin-bottom: 24px;
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 10px;
-      background: rgba(2, 6, 23, 0.45);
-      padding: 14px;
+      background: rgba(2, 6, 23, 0.6);
+      padding: 18px;
     }
 
     .complexity-title {
@@ -341,14 +398,14 @@
     .complexity-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
+      gap: 16px;
     }
 
     .complexity-item {
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 8px;
-      padding: 12px;
-      background: rgba(15, 23, 42, 0.6);
+      padding: 14px;
+      background: rgba(15, 23, 42, 0.72);
     }
 
     .complexity-label {
@@ -364,21 +421,21 @@
     }
 
     .algo-explain-box {
-      margin-bottom: 16px;
+      margin-bottom: 24px;
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 10px;
-      background: rgba(2, 6, 23, 0.45);
-      padding: 14px;
+      background: rgba(2, 6, 23, 0.6);
+      padding: 18px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
+      gap: 18px;
     }
 
     .algo-explain-card {
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 8px;
-      background: rgba(15, 23, 42, 0.6);
-      padding: 12px;
+      background: rgba(15, 23, 42, 0.72);
+      padding: 14px;
     }
 
     .algo-explain-title {
@@ -394,11 +451,11 @@
     }
 
     .code-section {
-      margin-top: 18px;
+      margin-top: 26px;
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 10px;
-      background: rgba(2, 6, 23, 0.45);
-      padding: 14px;
+      background: rgba(2, 6, 23, 0.6);
+      padding: 18px;
     }
 
     .code-section-title {
@@ -410,14 +467,14 @@
     .code-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 14px;
+      gap: 18px;
     }
 
     .code-card {
       border: 1px solid rgba(148, 163, 184, 0.2);
       border-radius: 8px;
       overflow: hidden;
-      background: rgba(15, 23, 42, 0.65);
+      background: rgba(15, 23, 42, 0.76);
     }
 
     .code-card-title {
@@ -425,7 +482,7 @@
       font-size: 0.9rem;
       color: var(--muted);
       border-bottom: 1px solid rgba(148, 163, 184, 0.2);
-      background: rgba(2, 6, 23, 0.65);
+      background: rgba(2, 6, 23, 0.76);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -445,7 +502,7 @@
     }
 
     .copy-hint {
-      margin-top: 10px;
+      margin-top: 14px;
       color: #93c5fd;
       font-size: 0.92rem;
       min-height: 22px;
@@ -467,7 +524,7 @@
       .left-plugin {
         position: static;
         width: auto;
-        margin: 0 0 14px;
+        margin: 0 0 18px;
       }
       .app {
         margin-left: auto;
@@ -532,6 +589,7 @@
   <div class="app">
     <div class="top-nav">
       <a class="back-link" href="index.html">回到主畫面</a>
+      <a class="report-link" href="report%20of%20searching.pdf" target="_blank" rel="noopener noreferrer">查看搜尋報告 PDF</a>
     </div>
 
     <div class="student-header">
@@ -672,6 +730,7 @@
     const copyCppBtn = document.getElementById('copyCppBtn');
     const copyPythonBtn = document.getElementById('copyPythonBtn');
     const copyHintEl = document.getElementById('copyHint');
+    const leftPluginEl = document.querySelector('.left-plugin');
 
     const ALGO_INFO = {
       linear: {
@@ -1200,6 +1259,63 @@ def jump_search(arr, target):
       statusTextEl.textContent = '已重置到初始步驟。';
     });
 
+    function setupSidebarInertia() {
+      if (!leftPluginEl) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      const isFloatingMode = () => window.getComputedStyle(leftPluginEl).position === 'fixed';
+
+      let currentOffset = 0;
+      let targetOffset = 0;
+      let lastY = window.scrollY;
+      let rafId = null;
+      const maxShift = 12;
+
+      function animate() {
+        targetOffset *= 0.88;
+        currentOffset += (targetOffset - currentOffset) * 0.18;
+
+        if (Math.abs(currentOffset) < 0.05 && Math.abs(targetOffset) < 0.05) {
+          currentOffset = 0;
+          targetOffset = 0;
+          leftPluginEl.style.transform = 'translate3d(0, 0, 0)';
+          rafId = null;
+          return;
+        }
+
+        leftPluginEl.style.transform = `translate3d(0, ${currentOffset.toFixed(2)}px, 0)`;
+        rafId = requestAnimationFrame(animate);
+      }
+
+      window.addEventListener('scroll', () => {
+        if (!isFloatingMode()) {
+          leftPluginEl.style.transform = 'translate3d(0, 0, 0)';
+          currentOffset = 0;
+          targetOffset = 0;
+          lastY = window.scrollY;
+          return;
+        }
+
+        const nowY = window.scrollY;
+        const delta = nowY - lastY;
+        lastY = nowY;
+
+        targetOffset += delta * 0.16;
+        targetOffset = Math.max(-maxShift, Math.min(maxShift, targetOffset));
+
+        if (!rafId) rafId = requestAnimationFrame(animate);
+      }, { passive: true });
+
+      window.addEventListener('resize', () => {
+        if (!isFloatingMode()) {
+          leftPluginEl.style.transform = 'translate3d(0, 0, 0)';
+          currentOffset = 0;
+          targetOffset = 0;
+          lastY = window.scrollY;
+        }
+      });
+    }
+
     function init() {
       sizeValueEl.textContent = `${sizeRangeEl.value} 筆`;
       speedValueEl.textContent = speedLabel(Number(speedRangeEl.value));
@@ -1207,6 +1323,7 @@ def jump_search(arr, target):
       setTargetFromGeneratedData();
       updateTargetBounds();
       buildScenario();
+      setupSidebarInertia();
     }
 
     init();
