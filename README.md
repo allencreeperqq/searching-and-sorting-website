@@ -128,6 +128,12 @@
   - 線性搜尋、二分搜尋、跳躍搜尋切換時，問號提示文字會同步更新。
   - 移除原本固定顯示的複雜度說明卡，版面更精簡一致。
 
+### v0.4.7 - 2026-03-23
+
+- 首頁 index.html 新增「我的個人部落格」按鈕：
+  - 連結至 https://allencreeperqq.github.io/personal-website/。
+  - 以新分頁開啟（target="_blank"），並加上 rel="noopener noreferrer"。
+
 ## 目前頁面
 
 - index.html：主選單
