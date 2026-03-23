@@ -1,7 +1,7 @@
 # sort_report
 
 ### 這個是作為大一電機工程學系計算機概論作業
-### 網址: https://allencreeperqq.github.io/searching-and-sorting-website/search.html
+### 網址: https://allencreeperqq.github.io/searching-and-sorting-website/index.html
 
 ## 版本歷程
 
