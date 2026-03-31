@@ -147,11 +147,26 @@
       transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, border-color 0.25s ease;
     }
 
+    .menu-link-blog {
+      min-width: min(100%, 460px);
+      padding: 15px 20px;
+      font-size: 1.08rem;
+      font-weight: 700;
+      border: 1px solid rgba(253, 224, 71, 0.78);
+      background: linear-gradient(135deg, #f97316, #eab308, #22c55e, #3b82f6);
+      box-shadow: 0 12px 24px rgba(14, 165, 233, 0.28), 0 0 0 1px rgba(255, 255, 255, 0.16) inset;
+    }
+
     .menu-link:hover {
       transform: translateY(-2px);
       background: linear-gradient(135deg, #f97316, #eab308, #22c55e, #3b82f6, #ec4899);
       border-color: rgba(255, 255, 255, 0.65);
       box-shadow: 0 12px 24px rgba(244, 114, 182, 0.35), 0 0 22px rgba(34, 211, 238, 0.28);
+    }
+
+    .menu-link-blog:hover {
+      transform: translateY(-3px) scale(1.01);
+      box-shadow: 0 16px 30px rgba(249, 115, 22, 0.38), 0 0 28px rgba(59, 130, 246, 0.42);
     }
 
     .github-link {
@@ -240,6 +255,59 @@
       max-width: min(58vw, 380px);
     }
 
+    .welcome-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      display: grid;
+      place-items: center;
+      background: rgba(2, 6, 23, 0.62);
+      backdrop-filter: blur(3px);
+      padding: 20px;
+    }
+
+    .welcome-modal[hidden] {
+      display: none;
+    }
+
+    .welcome-modal-card {
+      width: min(92vw, 420px);
+      border: 1px solid rgba(125, 211, 252, 0.6);
+      border-radius: 14px;
+      background: rgba(15, 23, 42, 0.95);
+      box-shadow: 0 18px 34px rgba(0, 0, 0, 0.42);
+      padding: 18px 16px;
+      text-align: center;
+      color: #e0f2fe;
+    }
+
+    .welcome-modal-title {
+      margin: 0;
+      font-size: 1.08rem;
+      line-height: 1.45;
+      color: #dbeafe;
+    }
+
+    .welcome-modal-actions {
+      margin-top: 14px;
+    }
+
+    .welcome-modal-close {
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      border-radius: 8px;
+      background: rgba(30, 41, 59, 0.8);
+      color: #e2e8f0;
+      padding: 7px 12px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .welcome-modal-close:hover {
+      border-color: rgba(125, 211, 252, 0.65);
+      color: #bae6fd;
+    }
+
     @media (max-width: 560px) {
       .menu-card {
         padding: 22px 16px;
@@ -292,13 +360,12 @@
     </div>
 
     <h1>演算法學習網站</h1>
-    <p>這裡是主選單，請點選下方按鈕進入排序法、搜尋法或自我介紹頁面。</p>
+    <p>這裡是主選單，請點選下方按鈕進入排序法、搜尋法，或直接前往我的個人部落格。</p>
 
     <div class="menu-actions">
       <a class="menu-link" href="sort-html.html">學習排序法</a>
       <a class="menu-link" href="search.html">學習搜尋法</a>
-      <a class="menu-link" href="self.html">關於我</a>
-      <a class="menu-link" href="https://allencreeperqq.github.io/personal-website/" target="_blank" rel="noopener noreferrer">我的個人部落格</a>
+      <a class="menu-link menu-link-blog" href="https://allencreeperqq.github.io/personal-website/" target="_blank" rel="noopener noreferrer">前往我的個人部落格</a>
     </div>
 
     <p class="github-link">
@@ -306,15 +373,36 @@
     </p>
   </main>
 
+  <section class="welcome-modal" id="welcomeModal" aria-live="polite" aria-label="進站歡迎視窗">
+    <div class="welcome-modal-card">
+      <h2 class="welcome-modal-title">歡迎來到我的部落格</h2>
+      <div class="welcome-modal-actions">
+        <button class="welcome-modal-close" type="button" id="closeWelcomeModal" aria-label="關閉歡迎訊息">開始瀏覽</button>
+      </div>
+    </div>
+  </section>
+
   <aside class="mascot-widget" aria-label="kanatachan 歡迎訊息" role="button" tabindex="0" aria-live="polite">
     <div class="mascot-bubble" id="mascotBubble">kanatachan：歡迎使用者來到演算法學習網站。</div>
     <img class="mascot-image" src="kanatasochan_6.png" alt="kanatachan" />
     <p class="mascot-tip">點我會改變!</p>
   </aside>
 
-  <p class="copyright-note">本網站之所有圖片請勿私自使用 版權所有於海外公司</p>
+  <p class="copyright-note">請勿將背景圖片無斷商用</p>
 
   <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const modal = document.getElementById('welcomeModal');
+      const closeBtn = document.getElementById('closeWelcomeModal');
+      if (!modal || !closeBtn) return;
+
+      const closeModal = () => {
+        modal.hidden = true;
+      };
+
+      closeBtn.addEventListener('click', closeModal);
+    });
+
     const mascotWidget = document.querySelector('.mascot-widget');
     const mascotBubble = document.getElementById('mascotBubble');
     const welcomeMessages = [
