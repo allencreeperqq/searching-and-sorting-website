@@ -361,7 +361,145 @@ int main() {
 
 
 ### 實驗方法
+一、使用C++結合AI協作寫一個程式，可以輸入資料大小n，並且要求這五種排序方法進行排序，後計算他所花費的電腦時間與記憶體空間，來計算固定n值下，演算法的複雜度。
+
+二、透過輸入n不停放大，可以透過結果數據得到複雜度的關係，例如線性關係、指數關係等。
+
+三、透過CSV輸出結果，並且記錄實驗數據待分析。
+
+分析程式碼請見complexity test/sort_complexity_visualizer.cpp
+
+>測資大小n
+>$n_1 = 100$ 
+>$n_2 = 500$
+>$n_3 = 1000$
+>$n_4 = 5000$
+>$n_5 = 10000$
+>$n_6 = 20000$
+>$n_7 = 30000$
+>$n_8 = 40000$
+>$n_9 = 50000$
+>
+>亂數seed = 42
 
 ### 實驗結果
 
-### 結果探討與心得
+$n_1 = 100$ 
+
+| n   | seed | algorithm | time_ms | comparisons | moves_or_swaps | peak_aux_bytes | theoretical_time             | theoretical_space  |
+|-----|------|-----------|---------|-------------|----------------|----------------|------------------------------|--------------------|
+| 100 | 42   | Bubble    | 0.0206  | 4935        | 2566           | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+| 100 | 42   | Selection | 0.0102  | 4950        | 96             | 1              | Best/Avg/Worst O(n^2)        | O(1)               |
+| 100 | 42   | Merge     | 0.025   | 535         | 1344           | 512            | Best/Avg/Worst O(n log n)    | O(n)               |
+| 100 | 42   | Quick     | 0.003   | 680         | 398            | 832            | Avg O(n log n), Worst O(n^2) | Avg O(log n)       |
+| 100 | 42   | Insertion | 0.0022  | 2658        | 2665           | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+
+$n_2 = 500$
+
+| n   | seed | algorithm | time_ms | comparisons | moves_or_swaps | peak_aux_bytes | theoretical_time             | theoretical_space  |
+|-----|------|-----------|---------|-------------|----------------|----------------|------------------------------|--------------------|
+| 500 | 42   | Bubble    | 0.4622  | 124560      | 58029          | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+| 500 | 42   | Selection | 0.234   | 124750      | 491            | 1              | Best/Avg/Worst O(n^2)        | O(1)               |
+| 500 | 42   | Merge     | 0.0776  | 3857        | 8976           | 2000           | Best/Avg/Worst O(n log n)    | O(n)               |
+| 500 | 42   | Quick     | 0.0167  | 4988        | 3070           | 1152           | Avg O(n log n), Worst O(n^2) | Avg O(log n)       |
+| 500 | 42   | Insertion | 0.0315  | 58520       | 58528          | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+
+$n_3 = 1000$
+
+| n    | seed | algorithm | time_ms | comparisons | moves_or_swaps | peak_aux_bytes | theoretical_time             | theoretical_space  |
+|------|------|-----------|---------|-------------|----------------|----------------|------------------------------|--------------------|
+| 1000 | 42   | Bubble    | 1.4878  | 497154      | 243217         | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+| 1000 | 42   | Selection | 0.977   | 499500      | 991            | 1              | Best/Avg/Worst O(n^2)        | O(1)               |
+| 1000 | 42   | Merge     | 0.1583  | 8690        | 19952          | 4000           | Best/Avg/Worst O(n log n)    | O(n)               |
+| 1000 | 42   | Quick     | 0.0362  | 10549       | 6142           | 1344           | Avg O(n log n), Worst O(n^2) | Avg O(log n)       |
+| 1000 | 42   | Insertion | 0.1234  | 244208      | 244216         | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+
+$n_4 = 5000$
+
+| n    | seed | algorithm | time_ms | comparisons | moves_or_swaps | peak_aux_bytes | theoretical_time             | theoretical_space  |
+|------|------|-----------|---------|-------------|----------------|----------------|------------------------------|--------------------|
+| 5000 | 42   | Bubble    | 41.533  | 12475972    | 6256255        | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+| 5000 | 42   | Selection | 24.5759 | 12497500    | 4992           | 1              | Best/Avg/Worst O(n^2)        | O(1)               |
+| 5000 | 42   | Merge     | 0.8134  | 55234       | 123616         | 20000          | Best/Avg/Worst O(n log n)    | O(n)               |
+| 5000 | 42   | Quick     | 0.2178  | 68748       | 39550          | 1600           | Avg O(n log n), Worst O(n^2) | Avg O(log n)       |
+| 5000 | 42   | Insertion | 3.1861  | 6261244     | 6261254        | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+
+$n_5 = 10000$
+
+| n     | seed | algorithm | time_ms  | comparisons | moves_or_swaps | peak_aux_bytes | theoretical_time             | theoretical_space  |
+|-------|------|-----------|----------|-------------|----------------|----------------|------------------------------|--------------------|
+| 10000 | 42   | Bubble    | 179.2474 | 49993404    | 25118412       | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+| 10000 | 42   | Selection | 100.9564 | 49995000    | 9994           | 1              | Best/Avg/Worst O(n^2)        | O(1)               |
+| 10000 | 42   | Merge     | 1.961    | 120465      | 267232         | 40000          | Best/Avg/Worst O(n log n)    | O(n)               |
+| 10000 | 42   | Quick     | 0.6026   | 150915      | 76407          | 1920           | Avg O(n log n), Worst O(n^2) | Avg O(log n)       |
+| 10000 | 42   | Insertion | 13.2185  | 25128399    | 25128411       | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+
+$n_6 = 20000$
+
+| n     | seed | algorithm | time_ms  | comparisons | moves_or_swaps | peak_aux_bytes | theoretical_time             | theoretical_space  |
+|-------|------|-----------|----------|-------------|----------------|----------------|------------------------------|--------------------|
+| 20000 | 42   | Bubble    | 776.0352 | 199986919   | 100387901      | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+| 20000 | 42   | Selection | 391.1812 | 199990000   | 19991          | 1              | Best/Avg/Worst O(n^2)        | O(1)               |
+| 20000 | 42   | Merge     | 3.5553   | 260840      | 574464         | 80000          | Best/Avg/Worst O(n log n)    | O(n)               |
+| 20000 | 42   | Quick     | 1.3524   | 324134      | 174558         | 2048           | Avg O(n log n), Worst O(n^2) | Avg O(log n)       |
+| 20000 | 42   | Insertion | 50.1906  | 100407888   | 100407900      | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+
+$n_7 = 30000$
+
+| n     | seed | algorithm | time_ms   | comparisons | moves_or_swaps | peak_aux_bytes | theoretical_time             | theoretical_space  |
+|-------|------|-----------|-----------|-------------|----------------|----------------|------------------------------|--------------------|
+| 30000 | 42   | Bubble    | 1777.7258 | 449902379   | 224630436      | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+| 30000 | 42   | Selection | 896.2282  | 449985000   | 29992          | 1              | Best/Avg/Worst O(n^2)        | O(1)               |
+| 30000 | 42   | Merge     | 5.3133    | 408567      | 894464         | 120000         | Best/Avg/Worst O(n log n)    | O(n)               |
+| 30000 | 42   | Quick     | 1.5968    | 512203      | 274562         | 2112           | Avg O(n log n), Worst O(n^2) | Avg O(log n)       |
+| 30000 | 42   | Insertion | 113.2289  | 224660423   | 224660435      | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+
+$n_8 = 40000$
+
+| n     | seed | algorithm | time_ms   | comparisons | moves_or_swaps | peak_aux_bytes | theoretical_time             | theoretical_space  |
+|-------|------|-----------|-----------|-------------|----------------|----------------|------------------------------|--------------------|
+| 40000 | 42   | Bubble    | 3186.7048 | 799947104   | 398882077      | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+| 40000 | 42   | Selection | 1585.1296 | 799980000   | 39986          | 1              | Best/Avg/Worst O(n^2)        | O(1)               |
+| 40000 | 42   | Merge     | 6.7472    | 561894      | 1228928        | 160000         | Best/Avg/Worst O(n log n)    | O(n)               |
+| 40000 | 42   | Quick     | 2.0186    | 728923      | 376990         | 2304           | Avg O(n log n), Worst O(n^2) | Avg O(log n)       |
+| 40000 | 42   | Insertion | 195.3869  | 398922063   | 398922076      | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+
+$n_9 = 50000$
+
+| n     | seed | algorithm | time_ms   | comparisons | moves_or_swaps | peak_aux_bytes | theoretical_time             | theoretical_space  |
+|-------|------|-----------|-----------|-------------|----------------|----------------|------------------------------|--------------------|
+| 50000 | 42   | Bubble    | 5032.5542 | 1249926172  | 621109975      | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+| 50000 | 42   | Selection | 2497.4758 | 1249975000  | 49993          | 1              | Best/Avg/Worst O(n^2)        | O(1)               |
+| 50000 | 42   | Merge     | 8.8559    | 718145      | 1568928        | 200000         | Best/Avg/Worst O(n log n)    | O(n)               |
+| 50000 | 42   | Quick     | 2.7106    | 1024423     | 603964         | 2368           | Avg O(n log n), Worst O(n^2) | Avg O(log n)       |
+| 50000 | 42   | Insertion | 307.4319  | 621159961   | 621159974      | 1              | Best O(n), Avg/Worst O(n^2)  | O(1)               |
+
+
+
+### 結果探討
+
+>表一、橫軸(資料n) 縱軸(ms)
+![表格一](n-O(n).png)
+
+>表二、merge sort 與 quick sort對比 橫軸(資料n) 縱軸(ms)
+![表格二](mergevsquick.png)
+
+從表一可以看到非常明顯的出現兩種族群，一種是積極上拋物線的$O(n^2)$組，一組是趨於平滑的水平$O(nlogn)$組。我們可以分析一下這兩組是否有達到預期的時間複雜度，以及是否驗證他的成長趨勢是指數級或一次級。
+
+先論$bigO(n^2)$組別的內容，根據我們實驗前的分析，共有bubble sort、select sort、insertion sort等三個演算法是指數級的時間複雜度。我們先看bubble sort，氣泡排序法在資料$n_3 = 1000$時，所花費的時間結果為1.4878毫秒，在資料$n_8 = 50000$時，運行時間來到驚人的5032.55毫秒，已知中間的資料量倍數$n_8/n_3 = 50000/1000 = 50$倍，帶入預期時間複雜度$O(50^2)$為2500，也就是說，預期中，資料增長50倍，其運作的時間應該要差2500倍。我們透過$5032.55/1.4878$得到3390，也就是實際上，運作時間增長為3390倍。若論select sort與insertion sort，可以發現其時間在同樣的算法下，在$n_3 -> n_8$的時間增長分別為2555、2495倍，都非常接近2500倍的範圍。再來就是要討論，為何同為次方等級增長的bubble sort在這個實驗中會產生3390倍的增長。
+
+於是我們單純對bubble sort再做一次的實驗。相同的$n_3 -> n_8$的範圍。得到1.777ms、4990.835ms，約為2808倍左右，所以證明，上面的一連串實驗對bubble sort應該有記憶體層面、運算層面因為多工等原因所以導致誤差，再次實驗後，證明氣泡排序法的時間複雜度在資料提升50倍的情況下，時間提升$50^2$倍約2500倍。
+
+再論$bigO(nlogn)$組，也就是merge sort及quick sort，這兩個演算法同樣取$n_3 -> n_8$的資料範圍，資料50倍增長，merge sort再時間上增加了$8.85/0.158$，約增加56倍。我們帶入$nlogn = 50log50 = 84.95$，雖然中間顯有誤差，不過已經非常接近了，中間的誤差也可以歸納於硬體調度多工層面的影響。而quick sort來到75倍左右，非常接近我們的預測數值。
+
+我們還有merge sort及quick sort的空間複雜度可以分析。看到peak_aux_bytes的欄位，merge在$n_8$顯示向硬體要求了200000的空間。而quick sort則是2368的空間。之前說到，merge因為需要一個完全等同資料量大小的額外空間，而已知一個C++的整數為4byte，資料量為50000，所以$50000*4 = 200000 byte$的空間，完全符合預期。看到quick sort，他的遞迴數值應該是$O(logn)$我們帶入得到15.6，所以這2368的空間拿來用於15層的遞迴運算。
+
+我們得到以下結論:
+1. merge sort and quick sort皆使用更多的記憶體來換去更快速的運行效率。
+2. 實驗因為CPU、RAM的多工調度難免會有誤差，多做測試可以排除極端值。
+3. merge sort與quick sort相比，需要花費更大的記憶體來完成，所以這就可以解釋為何許多人在競程時，常使用C++內建的quick sort完成排序。
+
+### 心得與未來展望
+這次的實驗以及網站架設過程都學到很多東西，以前會認為這些演算法都與自己無關，反正要用的時候，導入標頭使用quick sort就可以解決很多事情，透過實驗實際的看到電腦運行數據後，才理解為何許多人都在追求自己演算法的效率，當測資輸入大小大於萬時，電腦明顯的運行速度開始落後，這還要思考，並非每個人都具有相同的硬體可以快速運算出相同的答案，所以在軟體設計、演算法設計時，要去注意是否自己的優化可以讓大部分的使用者不花費太多記憶體效能下，也能達到服務。
+
+

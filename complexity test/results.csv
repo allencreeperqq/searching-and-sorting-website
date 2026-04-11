@@ -1,0 +1,6 @@
+n,seed,algorithm,time_ms,comparisons,moves_or_swaps,peak_aux_bytes,theoretical_time,theoretical_space
+50000,42,"Bubble",4990.834900,1249926172,621109975,1,"Best O(n), Avg/Worst O(n^2)","O(1)"
+50000,42,"Selection",2462.514400,1249975000,49993,1,"Best/Avg/Worst O(n^2)","O(1)"
+50000,42,"Merge",8.883600,718145,1568928,200000,"Best/Avg/Worst O(n log n)","O(n)"
+50000,42,"Quick",2.654400,1024423,603964,2368,"Avg O(n log n), Worst O(n^2)","Avg O(log n)"
+50000,42,"Insertion",305.835000,621159961,621159974,1,"Best O(n), Avg/Worst O(n^2)","O(1)"

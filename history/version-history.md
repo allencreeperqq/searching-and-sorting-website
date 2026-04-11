@@ -155,6 +155,35 @@
 - 首頁 index.html 左下角版權提示文字更新：
   - 調整為「請勿將背景圖片無斷商用」。
 
+### v0.4.13 - 2026-04-11
+
+- 在 complexity test 新增 C++ 複雜度實測程式：
+  - 檔案：complexity test/sort_complexity_visualizer.cpp
+  - 支援五種排序法：Bubble、Selection、Merge、Quick、Insertion。
+  - 可自訂資料量 n 與亂數種子 seed。
+  - 輸出每種排序的執行時間、比較次數、操作次數、輔助空間峰值。
+  - 終端機提供 ASCII 圖表可視化（時間與空間）。
+  - 另輸出 results.csv，方便用試算表畫圖分析。
+
+### v0.4.14 - 2026-04-11
+
+- 調整 complexity test 的 C++ 實測程式結尾互動：
+  - `sort_complexity_visualizer.cpp` 新增「按 Enter 結束程式...」等待。
+  - 避免視窗瞬間關閉，方便在 terminal 檢視結果。
+
+### v0.4.15 - 2026-04-11
+
+- 優化 complexity test 的 terminal 輸入提示：
+  - `sort_complexity_visualizer.cpp` 新增 Input Guide（Step 1/Step 2）。
+  - 輸入錯誤訊息改為清楚的英文提示。
+  - 提示文字調整為 ASCII，降低終端機編碼亂碼機率。
+
+### v0.4.16 - 2026-04-11
+
+- 修正 complexity test 的 terminal 互動顯示：
+  - `sort_complexity_visualizer.cpp` 取消 `cin/cout` 解綁設定。
+  - 輸入提示後加入 `std::flush`，確保提示即時顯示在 terminal。
+
 ## 目前頁面
 
 - index.html：主選單
